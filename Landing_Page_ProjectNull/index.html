@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Null - Landing Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="threejs-background"></div> <!-- Contenedor para Three.js -->
+    
+    <header>
+        <h1 id="titulo">Project Null</h1>
+        <nav>
+            <ul>
+                <li><a href="#equipo">Equipo</a></li>
+                <li><a href="#descripcion">Descripción</a></li>
+                <li><a href="#enlaces">Enlaces</a></li>
+                <li><a href="#documentacion">Documentación</a></li>
+                <li><a href="#galeria">Galería</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section id="equipo">
+        <h2>Nuestro Equipo</h2>
+        <h3 style="font-size: 30px;">Daniel</h3>
+        <img id="imagen1" style="border-radius: 50%;" src="imgs/me.jpg">
+        
+        
+        <p style="width: 20%; text-align: left; align-items: center;margin: auto;">Principal y único desarrollador del proyecto, responsable de todas las funcionalidades del programa, incluyendo la presentación, la gestión de la base de datos, la calidad del código, entre otros aspectos.</p>
+    </section>
+    
+
+   
+
+
+   </section>
+    
+    <section id="descripcion">
+        <h2>Descripción del Juego</h2>
+        <p style="width: 20%; text-align: left; align-items: center;margin: auto;">
+            Project Null es un juego de estrategia por turnos en el que los jugadores controlan 
+            planetas en un universo , donde fuerzas desconocidas 
+            influyen en la guerra interplanetaria. 
+            Cada jugador elige un planeta con características únicas y debe sobrevivir enfrentándose a los demás.
+        </p>
+        <h2>Que tiene de especial ProjectNull</h2>
+        <p style="width: 20%; text-align: left; align-items: center;margin: auto;">
+            Project Null no solo contará con una sólida funcionalidad de código, sino que también incorporará mecánicas para los planetas. Estas mecánicas ofrecerán a los jugadores la opción de ejercer efectos especiales que influirán en los demás participantes        
+        </p>
+    </section>
+    
+    <section id="enlaces">
+        <h2>Enlaces Importantes</h2>
+        <ul style="list-style: none;">
+            <li ><a href="https://github.com/Bawlovski/projectnull" target="_blank">Repositorio en GitHub</a></li>
+            <li><a href="https://trello.com/b/NKESo9bu/projectnull" target="_blank">Tablero de Trello</a></li>
+            
+        </ul>
+    </section>
+    
+    <section id="documentacion">
+        <h2>Documentación</h2>
+        <p>DIAGRAMA DE CLASES: (En revision)</p>
+        <img src="imgs/dgrm0.2.png"></img>
+        <p>DIAGRAMA DE CLASES Swing: (En creación)</p>
+    </section>
+    
+    <section id="galeria">
+        <h2>Galería del Juego</h2>
+        <p>Mockups y, en el futuro, capturas del juego.</p>
+        <p>Menu inical del juego</p>
+        <img style="height: 500px; width: 750px;" src="imgs/MockUp/MainWindow.png">
+        <p>Menu de creacion de jugadores</p>
+        <img style="height: 500px; width: 750px;" src="imgs/MockUp/player_create.png">
+        <p>Ventana de juego</p>
+        <img style="height: 500px; width: 750px;" src="imgs/MockUp/play_game_window.png">
+
+    </section>
+    
+    
+       
+    <script src="script.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Configuración básica de la escena
+        const scene = new THREE.Scene();
+        const camara = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('threejs-background').appendChild(renderer.domElement); 
+
+        // Crear un fondo de estrellas
+        const stg = new THREE.BufferGeometry();
+        const stm = new THREE.PointsMaterial({ color: 0xffffff });
+
+        const ec = 10000;
+        const p = new Float32Array(ec * 3);
+
+        for (let i = 0; i < ec; i++) {
+            p[i * 3] = (Math.random() - 0.5) * 2000; // X
+            p[i * 3 + 1] = (Math.random() - 0.5) * 2000; // Y
+            p[i * 3 + 2] = (Math.random() - 0.5) * 2000; // Z
+        }
+
+        stg.setAttribute('position', new THREE.BufferAttribute(p, 3));
+        const stars = new THREE.Points(stg, stm);
+        scene.add(stars);
+
+        
+        camara.position.z = 5;
+
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            stars.rotation.x += 0.0005;
+            stars.rotation.y += 0.0005;
+            renderer.render(scene, camara);
+        }
+
+        animate();
+
+        
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camara.aspect = window.innerWidth / window.innerHeight;
+            camara.updateProjectionMatrix();
+        });
+    </script>
+
+   
+</body>
+</html>
