@@ -3,18 +3,17 @@ package swing;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.io.FileNotFoundException;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-
-import javax.swing.BorderFactory;
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -23,94 +22,86 @@ public class GameMenu extends JFrame {
     private Font customFont;
 
     public GameMenu() {
-        // Cargar la fuente personalizada
-        loadCustomFont();
-
         // Configuración de la ventana
         setTitle("Project Null");
-        setSize(1200, 800); // Ventana más grande
+        setSize(800, 600); // Tamaño de la ventana
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
+        
+        setUndecorated(true);
+        
+        // Cargar la fuente personalizada
+        loadCustomFont();
 
-        // Panel de fondo con imagen en escala de grises
-        BackgroundPanel background = new BackgroundPanel("C:/Users/ZONAINFORMATICA FRAN/Downloads/background.jpg");
-        setContentPane(background);
-        background.setLayout(new GridBagLayout());
+        // Panel principal con imagen de fondo
+        JPanel panel = new JPanel(new GridBagLayout()) {
+            @Override
+            protected void paintComponent(java.awt.Graphics g) {
+                super.paintComponent(g);
+                try {
+                    // Cargar la imagen de fondo
+                    BufferedImage backgroundImage = ImageIO.read(new File("C:/Users/ZONAINFORMATICA FRAN/Downloads/background.jpg"));
+                    g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        setContentPane(panel);
 
         // Configuración del diseño
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = GridBagConstraints.RELATIVE;
-        gbc.insets = new Insets(20, 0, 20, 0); // Espaciado entre botones
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(10, 20, 10, 10); // Espaciado entre elementos (izquierda: 20)
+        gbc.anchor = GridBagConstraints.CENTER; // Alinear al centro
+        gbc.fill = GridBagConstraints.HORIZONTAL; // No expandir los componentes
 
-        // Título estilizado en escala de grises con fuente Oi
+        // Título "PROJECT NULL"
         JLabel title = new JLabel("PROJECT NULL");
-        title.setFont(customFont.deriveFont(Font.BOLD, 70));
-        title.setForeground(new Color(200, 200, 200)); // Gris claro
-        title.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100), 4));
-        title.setOpaque(true);
-        title.setBackground(new Color(30, 30, 30, 200)); // Semi-transparente
-        title.setHorizontalAlignment(SwingConstants.CENTER);
-        title.setPreferredSize(new Dimension(600, 120));
-        background.add(title, gbc);
+        title.setFont(customFont.deriveFont(100f)); // Usar la fuente personalizada
+        title.setForeground(Color.white); // Color del texto
+        title.setHorizontalAlignment(SwingConstants.LEFT); // Alinear texto a la izquierda
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(title, gbc);
 
-        // Botones del menú con diseño en escala de grises y fuente Oi
+        // Botones del menú
         String[] buttonTexts = {"JUGAR", "REGLAS", "CREDITOS", "RANKING"};
         for (String text : buttonTexts) {
-            JButton button = createStyledButton(text);
-            background.add(button, gbc);
+            JButton button = new JButton(text);
+            button.setFont(customFont.deriveFont(30f)); // Usar la fuente personalizada
+            button.setForeground(Color.WHITE); // Color del texto
+            button.setBackground(new Color(70, 70, 70, 200)); // Fondo del botón
+            button.setOpaque(true);
+            button.setBorderPainted(false); // Eliminar el borde del botón
+            button.setPreferredSize(new Dimension(300, 60)); // Mismo tamaño para todos los botones
+            gbc.gridy++;
+            panel.add(button, gbc);
         }
 
-        // Botón de salida en la esquina inferior izquierda
-        JButton exitButton = createStyledButton("SALIR");
+        // Botón de salida
+        JButton exitButton = new JButton("SALIR");
+        exitButton.setFont(customFont.deriveFont(30f)); // Usar la fuente personalizada
+        exitButton.setForeground(Color.WHITE); // Color del texto
+        exitButton.setBackground(new Color(70, 70, 70, 200)); // Fondo del botón
+        exitButton.setOpaque(true);
+        exitButton.setBorderPainted(false); // Eliminar el borde del botón
+        exitButton.setPreferredSize(new Dimension(300, 60)); // Mismo tamaño para el botón de salida
         exitButton.addActionListener(e -> System.exit(0));
-        gbc.anchor = GridBagConstraints.WEST;
-        background.add(exitButton, gbc);
+        gbc.gridy++;
+        panel.add(exitButton, gbc);
     }
 
     // Método para cargar la fuente personalizada
     private void loadCustomFont() {
         try {
-            InputStream is = getClass().getClassLoader().getResourceAsStream("fonts/RubikDistressed-Regular.ttf");
-            if (is == null) {
-                throw new FileNotFoundException("Font file not found");
-            }
-            customFont = Font.createFont(Font.TRUETYPE_FONT, is);
-        } catch (IOException | FontFormatException e) {
+            // Cargar la fuente desde un archivo .ttf
+            customFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/fonts/BlackDahlia.ttf"));
+        } catch (Exception e) {
             e.printStackTrace();
-            customFont = new Font("SansSerif", Font.BOLD, 26); // Fallback en caso de error
+            // Fuente de respaldo en caso de error
+            customFont = new Font("SansSerif", Font.BOLD, 18);
         }
-    }
-
-    // Método para crear botones estilizados
-    private JButton createStyledButton(String text) {
-        JButton button = new JButton(text);
-        button.setFont(customFont.deriveFont(Font.BOLD, 30)); // Fuente más grande
-        button.setForeground(new Color(240, 240, 240)); // Texto gris claro
-        button.setBackground(new Color(70, 70, 70, 200)); // Fondo gris oscuro con transparencia
-        button.setFocusPainted(false); // Eliminar el borde de enfoque
-        button.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(150, 150, 150), 2), // Borde exterior
-            BorderFactory.createEmptyBorder(15, 30, 15, 30) // Padding interno
-        ));
-        button.setPreferredSize(new Dimension(350, 100)); // Tamaño más grande
-        button.setOpaque(true);
-
-        // Efecto hover mejorado
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                button.setBackground(new Color(150, 150, 150, 220)); // Gris más claro al hacer hover
-                button.setForeground(Color.WHITE); // Texto blanco al hacer hover
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                button.setBackground(new Color(70, 70, 70, 200)); // Volver al color original
-                button.setForeground(new Color(240, 240, 240)); // Volver al color original del texto
-            }
-        });
-
-        return button;
     }
 
     public static void main(String[] args) {
