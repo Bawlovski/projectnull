@@ -45,12 +45,26 @@ public class Player {
         return planet.isAlive();
     }
 
-    public void attack(Player target) {
-        if (!planet.useMissile()) {
+    public void attack(Player target, int missiles) {
+        if (missiles <= 0 || missiles > planet.getMissiles() || !isAlive() || !target.isAlive()) {
             return;
         }
-        int damage = planet.getAttack();
-        target.getPlanet().takeDamage(damage);
+        
+        // Consume missiles first
+        for (int i = 0; i < missiles; i++) {
+            if (!planet.useMissile()) {
+                return; // Stop if we can't use more missiles
+            }
+        }
+        
+        // Calculate and apply damage with diminishing returns
+        int baseDamage = planet.getAttack();
+        int totalDamage = 0;
+        for (int i = 0; i < missiles; i++) {
+            // Each subsequent missile does less damage (80% of previous)
+            totalDamage += (int)(baseDamage * Math.pow(0.8, i));
+        }
+        target.getPlanet().takeDamage(totalDamage);
     }
 
     public void heal() {

@@ -8,45 +8,28 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JOptionPane;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
 
 public class GameMenu extends JFrame {
-
-    private Font customFont;
     private static final Color BUTTON_COLOR = new Color(70, 70, 70, 200);
     private static final Color HOVER_COLOR = new Color(90, 90, 90, 220);
     private static final Color TEXT_COLOR = new Color(255, 255, 255);
-    private static final Color ACCENT_COLOR = new Color(0, 255, 255, 100);
+    private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 48);
+    private static final Font BUTTON_FONT = new Font("Arial", Font.BOLD, 24);
 
     public GameMenu() {
-        // Configuración de la ventana
         setTitle("Game Menu");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
-        
         setUndecorated(true);
-        
-        // Cargar la fuente personalizada
-        loadCustomFont();
 
         createMainPanel();
     }
 
     private void createMainPanel() {
-        // Panel principal con imagen de fondo
         JPanel mainPanel = new JPanel(new GridBagLayout()) {
             @Override
             protected void paintComponent(java.awt.Graphics g) {
@@ -62,14 +45,13 @@ public class GameMenu extends JFrame {
         };
         setContentPane(mainPanel);
 
-        // Configuración del diseño
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Title
         JLabel titleLabel = new JLabel("PROJECT NULL");
-        titleLabel.setFont(customFont.deriveFont(48f));
+        titleLabel.setFont(TITLE_FONT);
         titleLabel.setForeground(TEXT_COLOR);
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -122,7 +104,7 @@ public class GameMenu extends JFrame {
             }
         };
         
-        button.setFont(customFont.deriveFont(24f));
+        button.setFont(BUTTON_FONT);
         button.setForeground(TEXT_COLOR);
         button.setBackground(BUTTON_COLOR);
         button.setOpaque(false);
@@ -148,19 +130,9 @@ public class GameMenu extends JFrame {
         return button;
     }
 
-    // Método para cargar la fuente personalizada
-    private void loadCustomFont() {
-        try {
-            // Cargar la fuente desde un archivo .ttf
-            customFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/fonts/BlackDahlia.ttf"));
-        } catch (Exception e) {
-            System.err.println("Error loading custom font: " + e.getMessage());
-            // Fuente de respaldo en caso de error
-            customFont = new Font("Arial", Font.BOLD, 18);
-        }
-    }
-
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new GameMenu().setVisible(true));
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            new GameMenu().setVisible(true);
+        });
     }
 }

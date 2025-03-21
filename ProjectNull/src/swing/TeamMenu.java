@@ -8,7 +8,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
@@ -19,10 +18,13 @@ import classes.planets.GlitchPlanet;
 import classes.planets.LostPlanet;
 
 public class TeamMenu extends JFrame {
-    private Font customFont;
     private static final Color BUTTON_COLOR = new Color(70, 70, 70, 200);
     private static final Color HOVER_COLOR = new Color(90, 90, 90, 220);
     private static final Color TEXT_COLOR = new Color(255, 255, 255);
+    private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 36);
+    private static final Font BUTTON_FONT = new Font("Arial", Font.BOLD, 24);
+    private static final Font INPUT_FONT = new Font("Arial", Font.PLAIN, 16);
+
     private List<Player> players;
     private JComboBox<String>[] planetSelectors;
     private JTextField[] nameFields;
@@ -36,7 +38,6 @@ public class TeamMenu extends JFrame {
         setResizable(false);
         setUndecorated(true);
 
-        loadCustomFont();
         createMainPanel();
     }
 
@@ -62,7 +63,7 @@ public class TeamMenu extends JFrame {
 
         // Title
         JLabel titleLabel = new JLabel("SELECT YOUR TEAM");
-        titleLabel.setFont(customFont.deriveFont(36f));
+        titleLabel.setFont(TITLE_FONT);
         titleLabel.setForeground(TEXT_COLOR);
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -119,7 +120,7 @@ public class TeamMenu extends JFrame {
 
         // Player name field
         JTextField nameField = new JTextField("Player " + (index + 1));
-        nameField.setFont(customFont.deriveFont(16f));
+        nameField.setFont(INPUT_FONT);
         nameField.setBackground(new Color(50, 50, 50, 200));
         nameField.setForeground(TEXT_COLOR);
         nameField.setCaretColor(TEXT_COLOR);
@@ -128,7 +129,7 @@ public class TeamMenu extends JFrame {
 
         // Planet selector
         JComboBox<String> planetSelector = new JComboBox<>(planets);
-        planetSelector.setFont(customFont.deriveFont(16f));
+        planetSelector.setFont(INPUT_FONT);
         planetSelector.setBackground(new Color(50, 50, 50, 200));
         planetSelector.setForeground(TEXT_COLOR);
         planetSelectors[index] = planetSelector;
@@ -172,7 +173,7 @@ public class TeamMenu extends JFrame {
             }
         };
         
-        button.setFont(customFont.deriveFont(24f));
+        button.setFont(BUTTON_FONT);
         button.setForeground(TEXT_COLOR);
         button.setBackground(BUTTON_COLOR);
         button.setOpaque(false);
@@ -196,15 +197,6 @@ public class TeamMenu extends JFrame {
         });
         
         return button;
-    }
-
-    private void loadCustomFont() {
-        try {
-            customFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/fonts/BlackDahlia.ttf"));
-        } catch (Exception e) {
-            System.err.println("Error loading custom font: " + e.getMessage());
-            customFont = new Font("Arial", Font.BOLD, 18);
-        }
     }
 
     public static void main(String[] args) {

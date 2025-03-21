@@ -69,8 +69,12 @@ public class Game {
                         targetIndex++; // Adjust for skipped current player
                     }
                     Player target = players.get(targetIndex);
-                    currentPlayer.attack(target);
-                    System.out.println(currentPlayer.getName() + " attacked " + target.getName());
+                    
+                    // Get number of missiles to use
+                    System.out.println("\nEnter number of missiles to use (1-" + currentPlayer.getPlanet().getMissiles() + "):");
+                    int missiles = getValidChoice(1, currentPlayer.getPlanet().getMissiles());
+                    currentPlayer.attack(target, missiles);
+                    System.out.println(currentPlayer.getName() + " attacked " + target.getName() + " with " + missiles + " missiles");
                     break;
 
                 case 2:

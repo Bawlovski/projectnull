@@ -22,13 +22,16 @@ import classes.planets.GlitchPlanet;
 import classes.planets.LostPlanet;
 
 public class BattleScreen extends JFrame {
-    private Font customFont;
     private static final Color BUTTON_COLOR = new Color(70, 70, 70, 200);
     private static final Color HOVER_COLOR = new Color(90, 90, 90, 220);
     private static final Color TEXT_COLOR = new Color(255, 255, 255);
     private static final Color HEALTH_COLOR = new Color(0, 255, 0, 200);
     private static final Color MISSILE_COLOR = new Color(255, 165, 0, 200);
     private static final Color DAMAGE_COLOR = new Color(255, 0, 0, 200);
+    private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 36);
+    private static final Font BUTTON_FONT = new Font("Arial", Font.BOLD, 24);
+    private static final Font STATUS_FONT = new Font("Arial", Font.BOLD, 20);
+    private static final Font LOGS_FONT = new Font("Arial", Font.PLAIN, 14);
 
     private Player currentPlayer;
     private List<Player> allPlayers;
@@ -38,14 +41,21 @@ public class BattleScreen extends JFrame {
     private JPanel actionPanel;
     private JPanel targetPanel;
     private JPanel logsPanel;
+    private JPanel missilePanel;
     private JLabel statusLabel;
     private JTextArea logsArea;
     private Timer botTimer;
+    private int selectedMissiles = 0;
+    private JSlider missileSlider;
+    private JLabel missileCountLabel;
+    private int currentBotIndex = 0;
+    private List<Bot> activeBots;
 
     public BattleScreen(List<Player> players) {
         this.allPlayers = new ArrayList<>(players);
         this.currentPlayer = players.get(0); // First player is human
         this.bots = new ArrayList<>();
+        this.activeBots = new ArrayList<>();
         
         // Create bots for all players except the first one
         for (int i = 1; i < players.size(); i++) {
@@ -59,30 +69,46 @@ public class BattleScreen extends JFrame {
         setResizable(false);
         setUndecorated(true);
         
-        loadCustomFont();
-        
         // Initialize panels
         statusPanel = new JPanel(new GridBagLayout());
         actionPanel = new JPanel(new GridBagLayout());
         targetPanel = new JPanel(new GridBagLayout());
         logsPanel = new JPanel(new GridBagLayout());
+        missilePanel = new JPanel(new GridBagLayout());
         
         createStatusPanel();
         createActionPanel();
         createTargetPanel();
+        createMissilePanel();
         createLogsPanel();
         createMainPanel();
         
-        // Initially hide target panel
+        // Initially hide target and missile panels
         targetPanel.setVisible(false);
+        missilePanel.setVisible(false);
         
         // Create bot timer
         botTimer = new Timer(2000, e -> {
-            for (Bot bot : bots) {
-                bot.makeMove(allPlayers);
+            if (currentBotIndex < activeBots.size()) {
+                Bot currentBot = activeBots.get(currentBotIndex);
+                if (currentBot.getBotPlayer().isAlive()) {
+                    currentBot.makeMove(allPlayers);
+                    updateLogs();
+                }
+                currentBotIndex++;
+            } else {
+                // All bots have moved, reset index and stop timer
+                currentBotIndex = 0;
+                botTimer.stop();
+                
+                // After all bots have moved, enable player actions
+                actionPanel.setVisible(true);
+                statusLabel.setText("Your turn! Choose your action!");
                 updateLogs();
+                updateMissilePanel();
             }
         });
+        botTimer.setRepeats(true);
     }
 
     private void createLogsPanel() {
@@ -98,7 +124,7 @@ public class BattleScreen extends JFrame {
         // Create logs text area
         logsArea = new JTextArea();
         logsArea.setEditable(false);
-        logsArea.setFont(customFont.deriveFont(14f));
+        logsArea.setFont(LOGS_FONT);
         logsArea.setBackground(new Color(20, 20, 40, 200));
         logsArea.setForeground(TEXT_COLOR);
         logsArea.setLineWrap(true);
@@ -121,7 +147,13 @@ public class BattleScreen extends JFrame {
             logs.append(player.getName())
                 .append(" (")
                 .append(player.getPlanet().getName())
-                .append(")\n");
+                .append(")");
+            
+            if (!player.isAlive()) {
+                logs.append(" [DEAD]");
+            }
+            
+            logs.append("\n");
             logs.append("Health: ")
                 .append(player.getPlanet().getHealth())
                 .append("/")
@@ -172,12 +204,16 @@ public class BattleScreen extends JFrame {
 
         gbc.gridy = 3;
         gbc.gridheight = 1;
+        mainPanel.add(missilePanel, gbc);
+
+        gbc.gridy = 4;
+        gbc.gridheight = 1;
         mainPanel.add(targetPanel, gbc);
 
         // Right side logs panel
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.gridheight = 4;
+        gbc.gridheight = 5;
         mainPanel.add(logsPanel, gbc);
     }
 
@@ -190,7 +226,7 @@ public class BattleScreen extends JFrame {
 
         // Current player status
         JLabel playerLabel = new JLabel(currentPlayer.getName() + " - " + currentPlayer.getPlanet().getName());
-        playerLabel.setFont(customFont.deriveFont(24f));
+        playerLabel.setFont(TITLE_FONT);
         playerLabel.setForeground(TEXT_COLOR);
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -212,7 +248,7 @@ public class BattleScreen extends JFrame {
 
         // Status message
         statusLabel = new JLabel("Choose your action!");
-        statusLabel.setFont(customFont.deriveFont(20f));
+        statusLabel.setFont(STATUS_FONT);
         statusLabel.setForeground(TEXT_COLOR);
         gbc.gridy = 3;
         statusPanel.add(statusLabel, gbc);
@@ -244,9 +280,17 @@ public class BattleScreen extends JFrame {
         actionPanel.add(regenerateButton, gbc);
 
         attackButton.addActionListener(e -> {
-            statusLabel.setText("Select your target!");
-            targetPanel.setVisible(true);
-            actionPanel.setVisible(false);
+            // Check if there are any alive targets
+            boolean hasAliveTargets = allPlayers.stream()
+                .anyMatch(p -> p != currentPlayer && p.isAlive());
+            
+            if (hasAliveTargets) {
+                statusLabel.setText("Select number of missiles!");
+                actionPanel.setVisible(false);
+                missilePanel.setVisible(true);
+            } else {
+                statusLabel.setText("No alive targets available!");
+            }
         });
 
         defendButton.addActionListener(e -> {
@@ -279,7 +323,7 @@ public class BattleScreen extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         JLabel targetLabel = new JLabel("Select Target:");
-        targetLabel.setFont(customFont.deriveFont(20f));
+        targetLabel.setFont(TITLE_FONT);
         targetLabel.setForeground(TEXT_COLOR);
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -287,22 +331,33 @@ public class BattleScreen extends JFrame {
 
         // Add target buttons for all players except the current player
         int buttonIndex = 1;
+        boolean hasAliveTargets = false;
         for (Player target : allPlayers) {
-            if (target != currentPlayer) {
+            if (target != currentPlayer && target.isAlive()) {
+                hasAliveTargets = true;
                 JButton targetButton = createStyledButton(target.getName() + " - " + 
                                                         target.getPlanet().getName());
                 final Player finalTarget = target;
                 targetButton.addActionListener(e -> {
-                    statusLabel.setText("Attacking " + finalTarget.getName() + "...");
-                    currentPlayer.attack(finalTarget);
+                    statusLabel.setText("Attacking " + finalTarget.getName() + " with " + selectedMissiles + " missiles...");
+                    currentPlayer.attack(finalTarget, selectedMissiles);
                     targetPanel.setVisible(false);
+                    actionPanel.setVisible(true);
                     updateLogs();
+                    updateMissilePanel();
                     startBotTurn();
                 });
                 
                 gbc.gridy = buttonIndex++;
                 targetPanel.add(targetButton, gbc);
             }
+        }
+
+        if (!hasAliveTargets) {
+            statusLabel.setText("No alive targets available!");
+            targetPanel.setVisible(false);
+            actionPanel.setVisible(true);
+            return;
         }
 
         JButton backButton = createStyledButton("BACK");
@@ -314,6 +369,85 @@ public class BattleScreen extends JFrame {
             actionPanel.setVisible(true);
             statusLabel.setText("Choose your action!");
         });
+    }
+
+    private void createMissilePanel() {
+        missilePanel.setOpaque(false);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel missileLabel = new JLabel("Select number of missiles:");
+        missileLabel.setFont(TITLE_FONT);
+        missileLabel.setForeground(TEXT_COLOR);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        missilePanel.add(missileLabel, gbc);
+
+        // Create slider for missile selection
+        missileSlider = new JSlider(1, currentPlayer.getPlanet().getMissiles(), 1);
+        missileSlider.setMajorTickSpacing(5);
+        missileSlider.setMinorTickSpacing(1);
+        missileSlider.setPaintTicks(true);
+        missileSlider.setPaintLabels(true);
+        missileSlider.setBackground(new Color(50, 50, 50, 200));
+        missileSlider.setForeground(TEXT_COLOR);
+        missileSlider.setFont(STATUS_FONT);
+        gbc.gridy = 1;
+        missilePanel.add(missileSlider, gbc);
+
+        // Add missile count label
+        missileCountLabel = new JLabel("1");
+        missileCountLabel.setFont(STATUS_FONT);
+        missileCountLabel.setForeground(TEXT_COLOR);
+        gbc.gridy = 2;
+        missilePanel.add(missileCountLabel, gbc);
+
+        // Update count label when slider changes
+        missileSlider.addChangeListener(e -> {
+            selectedMissiles = missileSlider.getValue();
+            missileCountLabel.setText(String.valueOf(selectedMissiles));
+        });
+
+        // Add confirm button
+        JButton confirmButton = createStyledButton("CONFIRM");
+        gbc.gridy = 3;
+        missilePanel.add(confirmButton, gbc);
+
+        confirmButton.addActionListener(e -> {
+            if (selectedMissiles > 0 && selectedMissiles <= currentPlayer.getPlanet().getMissiles()) {
+                missilePanel.setVisible(false);
+                targetPanel.setVisible(true);
+                statusLabel.setText("Select your target!");
+            }
+        });
+
+        // Add back button
+        JButton backButton = createStyledButton("BACK");
+        gbc.gridy = 4;
+        missilePanel.add(backButton, gbc);
+
+        backButton.addActionListener(e -> {
+            missilePanel.setVisible(false);
+            actionPanel.setVisible(true);
+            statusLabel.setText("Choose your action!");
+        });
+    }
+
+    private void updateMissilePanel() {
+        int maxMissiles = currentPlayer.getPlanet().getMissiles();
+        if (maxMissiles > 0) {
+            missileSlider.setMaximum(maxMissiles);
+            missileSlider.setValue(Math.min(selectedMissiles, maxMissiles));
+            selectedMissiles = missileSlider.getValue();
+            missileCountLabel.setText(String.valueOf(selectedMissiles));
+        } else {
+            missileSlider.setMaximum(1);
+            missileSlider.setValue(1);
+            selectedMissiles = 1;
+            missileCountLabel.setText("1");
+        }
     }
 
     private JPanel createStatusBar(int current, int max, Color color) {
@@ -349,13 +483,13 @@ public class BattleScreen extends JFrame {
             }
         };
         
-        button.setFont(customFont.deriveFont(20f));
+        button.setFont(BUTTON_FONT);
         button.setForeground(TEXT_COLOR);
         button.setBackground(BUTTON_COLOR);
         button.setOpaque(false);
         button.setBorderPainted(false);
         button.setFocusPainted(false);
-        button.setPreferredSize(new Dimension(300, 50));
+        button.setPreferredSize(new Dimension(300, 60));
         button.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         
         button.addMouseListener(new MouseAdapter() {
@@ -383,27 +517,26 @@ public class BattleScreen extends JFrame {
 
     private void loadCustomFont() {
         try {
-            customFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/fonts/BlackDahlia.ttf"));
+            // Load custom font
         } catch (Exception e) {
             System.err.println("Error loading custom font: " + e.getMessage());
-            customFont = new Font("Arial", Font.BOLD, 18);
         }
     }
 
     private void startBotTurn() {
         actionPanel.setVisible(false);
         statusLabel.setText("Bots are making their moves...");
-        botTimer.setRepeats(false);
-        botTimer.start();
         
-        // After bot turns, enable player actions
-        Timer enablePlayerTimer = new Timer(2000 * bots.size() + 500, e -> {
-            actionPanel.setVisible(true);
-            statusLabel.setText("Your turn! Choose your action!");
-            updateLogs();
-        });
-        enablePlayerTimer.setRepeats(false);
-        enablePlayerTimer.start();
+        // Update active bots list to include only alive bots
+        activeBots.clear();
+        for (Bot bot : bots) {
+            if (bot.getBotPlayer().isAlive()) {
+                activeBots.add(bot);
+            }
+        }
+        
+        currentBotIndex = 0; // Reset bot index
+        botTimer.start();
     }
 
     public static void main(String[] args) {
