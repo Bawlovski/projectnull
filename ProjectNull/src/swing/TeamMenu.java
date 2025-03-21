@@ -1,203 +1,215 @@
 package swing;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.image.BufferedImage;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import classes.Player;
+import classes.planets.AbyssPlanet;
+import classes.planets.GlitchPlanet;
+import classes.planets.LostPlanet;
 
 public class TeamMenu extends JFrame {
-
     private Font customFont;
+    private static final Color BUTTON_COLOR = new Color(70, 70, 70, 200);
+    private static final Color HOVER_COLOR = new Color(90, 90, 90, 220);
+    private static final Color TEXT_COLOR = new Color(255, 255, 255);
+    private List<Player> players;
+    private JComboBox<String>[] planetSelectors;
+    private JTextField[] nameFields;
 
     public TeamMenu() {
-        // Configuración de la ventana
-        setTitle("Crear Equipos");
-        setSize(800, 600); // Tamaño de la ventana
+        players = new ArrayList<>();
+        setTitle("Team Menu");
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
-        
         setUndecorated(true);
 
-        
-        // Cargar la fuente personalizada
         loadCustomFont();
+        createMainPanel();
+    }
 
-        // Panel principal con imagen de fondo
-        JPanel panel = new JPanel(new GridBagLayout()) {
+    private void createMainPanel() {
+        JPanel mainPanel = new JPanel(new GridBagLayout()) {
             @Override
             protected void paintComponent(java.awt.Graphics g) {
                 super.paintComponent(g);
-                try {
-                    // Cargar la imagen de fondo
-                    BufferedImage backgroundImage = ImageIO.read(new File("C:/Users/ZONAINFORMATICA FRAN/Downloads/background4.jpg"));
-                    g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                // Draw gradient background
+                g.setColor(new Color(20, 20, 40));
+                g.fillRect(0, 0, getWidth(), getHeight());
+                g.setColor(new Color(40, 40, 60));
+                for (int i = 0; i < getHeight(); i += 20) {
+                    g.drawLine(0, i, getWidth(), i);
                 }
             }
         };
-        setContentPane(panel);
+        setContentPane(mainPanel);
 
-        // Configuración del diseño
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10); // Espaciado entre elementos
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Título "CREAR EQUIPOS"
-        JLabel title = new JLabel("CREAR EQUIPOS");
-        title.setFont(customFont.deriveFont(100f)); // Usar la fuente personalizada
-        title.setForeground(Color.WHITE); // Color del texto en blanco
-        title.setHorizontalAlignment(SwingConstants.CENTER);
-        gbc.gridwidth = 2; // Ocupa dos columnas
+        // Title
+        JLabel titleLabel = new JLabel("SELECT YOUR TEAM");
+        titleLabel.setFont(customFont.deriveFont(36f));
+        titleLabel.setForeground(TEXT_COLOR);
         gbc.gridx = 0;
         gbc.gridy = 0;
-        panel.add(title, gbc);
+        mainPanel.add(titleLabel, gbc);
 
-        // Tipos de planetas disponibles
-        String[] planetTypes = {"Abyss", "Glitch", "Lost"};
+        // Create player selection panels
+        planetSelectors = new JComboBox[4];
+        nameFields = new JTextField[4];
+        String[] planets = {"Abyss Planet", "Glitch Planet", "Lost Planet"};
 
-        // Menús desplegables y campos de texto para nombres de jugadores
-        gbc.gridwidth = 1; // Restablecer a una columna
-        gbc.gridx = 0; // Columna izquierda
+        for (int i = 0; i < 4; i++) {
+            JPanel playerPanel = createPlayerPanel(i, planets);
+            gbc.gridy = i + 1;
+            mainPanel.add(playerPanel, gbc);
+        }
 
-        // Planeta 1
-        JLabel planeta1Label = new JLabel("Planeta 1:");
-        planeta1Label.setFont(customFont.deriveFont(18f)); // Usar la fuente personalizada
-        planeta1Label.setForeground(Color.WHITE); // Color del texto en blanco
-        gbc.gridy = 1;
-        panel.add(planeta1Label, gbc);
-
-        JComboBox<String> planeta1ComboBox = new JComboBox<>(planetTypes);
-        planeta1ComboBox.setFont(customFont.deriveFont(18f)); // Usar la fuente personalizada
-        planeta1ComboBox.setForeground(Color.WHITE); // Color del texto en blanco
-        planeta1ComboBox.setBackground(new Color(70, 70, 70, 200)); // Fondo del combo box
-        gbc.gridy = 2;
-        panel.add(planeta1ComboBox, gbc);
-
-        JTextField planeta1TextField = new JTextField(15); // Campo para el nombre del jugador
-        planeta1TextField.setFont(customFont.deriveFont(18f)); // Usar la fuente personalizada
-        planeta1TextField.setForeground(Color.WHITE); // Color del texto en blanco
-        planeta1TextField.setBackground(new Color(70, 70, 70, 200)); // Fondo del campo de texto
-        gbc.gridy = 3;
-        panel.add(planeta1TextField, gbc);
-
-        // Planeta 2
-        JLabel planeta2Label = new JLabel("Planeta 2:");
-        planeta2Label.setFont(customFont.deriveFont(18f)); // Usar la fuente personalizada
-        planeta2Label.setForeground(Color.WHITE); // Color del texto en blanco
-        gbc.gridy = 4;
-        panel.add(planeta2Label, gbc);
-
-        JComboBox<String> planeta2ComboBox = new JComboBox<>(planetTypes);
-        planeta2ComboBox.setFont(customFont.deriveFont(18f)); // Usar la fuente personalizada
-        planeta2ComboBox.setForeground(Color.WHITE); // Color del texto en blanco
-        planeta2ComboBox.setBackground(new Color(70, 70, 70, 200)); // Fondo del combo box
+        // Start Battle button
+        JButton startButton = createStyledButton("START BATTLE");
         gbc.gridy = 5;
-        panel.add(planeta2ComboBox, gbc);
+        mainPanel.add(startButton, gbc);
 
-        JTextField planeta2TextField = new JTextField(15); // Campo para el nombre del jugador
-        planeta2TextField.setFont(customFont.deriveFont(18f)); // Usar la fuente personalizada
-        planeta2TextField.setForeground(Color.WHITE); // Color del texto en blanco
-        planeta2TextField.setBackground(new Color(70, 70, 70, 200)); // Fondo del campo de texto
-        gbc.gridy = 6;
-        panel.add(planeta2TextField, gbc);
+        startButton.addActionListener(e -> {
+            players.clear();
+            for (int i = 0; i < 4; i++) {
+                String name = nameFields[i].getText().trim();
+                if (!name.isEmpty()) {
+                    String planetName = (String) planetSelectors[i].getSelectedItem();
+                    Player player = createPlayer(name, planetName);
+                    if (player != null) {
+                        players.add(player);
+                    }
+                }
+            }
 
-        // Menús desplegables y campos de texto a la derecha
-        gbc.gridx = 1; // Columna derecha
-
-        // Planeta 3
-        JLabel planeta3Label = new JLabel("Planeta 3:");
-        planeta3Label.setFont(customFont.deriveFont(18f)); // Usar la fuente personalizada
-        planeta3Label.setForeground(Color.WHITE); // Color del texto en blanco
-        gbc.gridy = 1;
-        panel.add(planeta3Label, gbc);
-
-        JComboBox<String> planeta3ComboBox = new JComboBox<>(planetTypes);
-        planeta3ComboBox.setFont(customFont.deriveFont(18f)); // Usar la fuente personalizada
-        planeta3ComboBox.setForeground(Color.WHITE); // Color del texto en blanco
-        planeta3ComboBox.setBackground(new Color(70, 70, 70, 200)); // Fondo del combo box
-        gbc.gridy = 2;
-        panel.add(planeta3ComboBox, gbc);
-
-        JTextField planeta3TextField = new JTextField(15); // Campo para el nombre del jugador
-        planeta3TextField.setFont(customFont.deriveFont(18f)); // Usar la fuente personalizada
-        planeta3TextField.setForeground(Color.WHITE); // Color del texto en blanco
-        planeta3TextField.setBackground(new Color(70, 70, 70, 200)); // Fondo del campo de texto
-        gbc.gridy = 3;
-        panel.add(planeta3TextField, gbc);
-
-        // Planeta 4
-        JLabel planeta4Label = new JLabel("Planeta 4:");
-        planeta4Label.setFont(customFont.deriveFont(18f)); // Usar la fuente personalizada
-        planeta4Label.setForeground(Color.WHITE); // Color del texto en blanco
-        gbc.gridy = 4;
-        panel.add(planeta4Label, gbc);
-
-        JComboBox<String> planeta4ComboBox = new JComboBox<>(planetTypes);
-        planeta4ComboBox.setFont(customFont.deriveFont(18f)); // Usar la fuente personalizada
-        planeta4ComboBox.setForeground(Color.WHITE); // Color del texto en blanco
-        planeta4ComboBox.setBackground(new Color(70, 70, 70, 200)); // Fondo del combo box
-        gbc.gridy = 5;
-        panel.add(planeta4ComboBox, gbc);
-
-        JTextField planeta4TextField = new JTextField(15); // Campo para el nombre del jugador
-        planeta4TextField.setFont(customFont.deriveFont(18f)); // Usar la fuente personalizada
-        planeta4TextField.setForeground(Color.WHITE); // Color del texto en blanco
-        planeta4TextField.setBackground(new Color(70, 70, 70, 200)); // Fondo del campo de texto
-        gbc.gridy = 6;
-        panel.add(planeta4TextField, gbc);
-
-        // Botón "Empezar Partida"
-        gbc.gridwidth = 2; // Ocupa dos columnas
-        gbc.gridx = 0;
-        gbc.gridy = 7;
-        JButton startGameButton = new JButton("EMPEZAR PARTIDA");
-        startGameButton.setFont(customFont.deriveFont(18f)); // Usar la fuente personalizada
-        startGameButton.setForeground(Color.WHITE); // Color del texto en blanco
-        startGameButton.setBackground(new Color(70, 70, 70, 200)); // Fondo del botón
-        startGameButton.setOpaque(true);
-        startGameButton.setBorderPainted(false); // Eliminar el borde del botón
-        panel.add(startGameButton, gbc);
-
-        // Botón "SALIR"
-        gbc.gridy = 8;
-        JButton exitButton = new JButton("SALIR");
-        exitButton.setFont(customFont.deriveFont(18f)); // Usar la fuente personalizada
-        exitButton.setForeground(Color.WHITE); // Color del texto en blanco
-        exitButton.setBackground(new Color(70, 70, 70, 200)); // Fondo del botón
-        exitButton.setOpaque(true);
-        exitButton.setBorderPainted(false); // Eliminar el borde del botón
-        exitButton.addActionListener(e -> System.exit(0));
-        panel.add(exitButton, gbc);
+            if (players.size() >= 2) {
+                this.dispose(); // Close TeamMenu
+                new BattleScreen(players).setVisible(true); // Open BattleScreen
+            } else {
+                JOptionPane.showMessageDialog(this, 
+                    "Please select at least 2 players to start the battle!",
+                    "Not Enough Players",
+                    JOptionPane.WARNING_MESSAGE);
+            }
+        });
     }
 
-    // Método para cargar la fuente personalizada
+    private JPanel createPlayerPanel(int index, String[] planets) {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setOpaque(false);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Player name field
+        JTextField nameField = new JTextField("Player " + (index + 1));
+        nameField.setFont(customFont.deriveFont(16f));
+        nameField.setBackground(new Color(50, 50, 50, 200));
+        nameField.setForeground(TEXT_COLOR);
+        nameField.setCaretColor(TEXT_COLOR);
+        nameField.setBorder(new LineBorder(TEXT_COLOR, 1));
+        nameFields[index] = nameField;
+
+        // Planet selector
+        JComboBox<String> planetSelector = new JComboBox<>(planets);
+        planetSelector.setFont(customFont.deriveFont(16f));
+        planetSelector.setBackground(new Color(50, 50, 50, 200));
+        planetSelector.setForeground(TEXT_COLOR);
+        planetSelectors[index] = planetSelector;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(nameField, gbc);
+
+        gbc.gridx = 1;
+        panel.add(planetSelector, gbc);
+
+        return panel;
+    }
+
+    private Player createPlayer(String name, String planetName) {
+        switch (planetName) {
+            case "Abyss Planet":
+                return new Player(name, new AbyssPlanet());
+            case "Glitch Planet":
+                return new Player(name, new GlitchPlanet());
+            case "Lost Planet":
+                return new Player(name, new LostPlanet());
+            default:
+                return null;
+        }
+    }
+
+    private JButton createStyledButton(String text) {
+        JButton button = new JButton(text) {
+            @Override
+            protected void paintComponent(java.awt.Graphics g) {
+                if (getModel().isPressed()) {
+                    g.setColor(HOVER_COLOR.darker());
+                } else if (getModel().isRollover()) {
+                    g.setColor(HOVER_COLOR);
+                } else {
+                    g.setColor(BUTTON_COLOR);
+                }
+                g.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+                super.paintComponent(g);
+            }
+        };
+        
+        button.setFont(customFont.deriveFont(24f));
+        button.setForeground(TEXT_COLOR);
+        button.setBackground(BUTTON_COLOR);
+        button.setOpaque(false);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        button.setPreferredSize(new Dimension(300, 60));
+        button.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(HOVER_COLOR);
+                button.repaint();
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(BUTTON_COLOR);
+                button.repaint();
+            }
+        });
+        
+        return button;
+    }
+
     private void loadCustomFont() {
         try {
-            // Cargar la fuente desde un archivo .ttf
             customFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/fonts/BlackDahlia.ttf"));
         } catch (Exception e) {
-            e.printStackTrace();
-            // Fuente de respaldo en caso de error
-            customFont = new Font("SansSerif", Font.BOLD, 18);
+            System.err.println("Error loading custom font: " + e.getMessage());
+            customFont = new Font("Arial", Font.BOLD, 18);
         }
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new TeamMenu().setVisible(true));
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            new TeamMenu().setVisible(true);
+        });
     }
 }
