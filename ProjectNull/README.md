@@ -9,31 +9,92 @@ This is a turn-based strategy game where players control planets and battle agai
 - Attack with missiles, heal, defend, or regenerate missiles
 - Save and load game functionality using SQLite database
 
-## Setup Instructions
+## Database Setup
 
-### SQLite JDBC Driver
+### Step 1: Download SQLite JDBC Driver
 
-For the save/load functionality to work, you need to add the SQLite JDBC driver to your project:
+1. Go to the SQLite JDBC GitHub releases page: https://github.com/xerial/sqlite-jdbc/releases
+2. Download the latest version JAR file (e.g., `sqlite-jdbc-3.42.0.0.jar`)
 
-1. Download the latest SQLite JDBC driver jar from https://github.com/xerial/sqlite-jdbc/releases
-2. Create a "lib" folder in your project root if it doesn't exist
-3. Place the downloaded jar file in the "lib" folder
-4. Add the jar to your project's classpath:
-   - In NetBeans: Right-click on your project → Properties → Libraries → Add JAR/Folder
-   - In Eclipse: Right-click on your project → Build Path → Configure Build Path → Libraries → Add External JARs
-   - In IntelliJ IDEA: File → Project Structure → Libraries → + (Add Library) → Java
+### Step 2: Add the Driver to Your Project
 
-### Running the Game
+#### In NetBeans:
+1. Right-click on your project in the Projects panel
+2. Select "Properties"
+3. Select "Libraries" from the left panel
+4. Click on "Add JAR/Folder"
+5. Navigate to the downloaded SQLite JDBC JAR file and select it
+6. Click "Open" and then "OK"
 
-1. Compile and run the `main.java` file
-2. Choose "New Game" to start a new game or "Load Game" to load a saved game
-3. During gameplay, use the "SAVE GAME" button to save your progress
+#### In Eclipse:
+1. Right-click on your project in the Package Explorer
+2. Select "Build Path" → "Configure Build Path"
+3. Select the "Libraries" tab
+4. Click "Add External JARs"
+5. Navigate to the downloaded SQLite JDBC JAR file and select it
+6. Click "Open" and then "OK"
 
-## Troubleshooting
+#### In IntelliJ IDEA:
+1. Go to File → Project Structure (or press Ctrl+Alt+Shift+S)
+2. Select "Libraries" from the left panel
+3. Click the "+" button and select "Java"
+4. Navigate to the downloaded SQLite JDBC JAR file and select it
+5. Click "OK" and then "Apply"
 
-If you encounter database errors, ensure:
-1. The SQLite JDBC driver is properly added to your classpath
-2. Your user account has write permissions in the directory where the game is running
+### Step 3: Verify Database Connectivity
+
+When you first save a game, the application will automatically:
+1. Create a `game_data.db` file in the root directory of your project
+2. Set up the necessary tables for storing game data
+
+To verify that your database is working correctly:
+1. Run the game
+2. Start a new game
+3. Make some moves and then click the "SAVE GAME" button
+4. Enter a name for your save
+5. Check that the save completes successfully
+
+### Database Structure
+
+The game uses two main tables:
+
+#### saved_games
+- `id`: Unique identifier for each saved game
+- `save_name`: Name given to the saved game
+- `save_date`: Timestamp when the game was saved
+- `current_turn`: Which player's turn it was when saved
+
+#### saved_players
+- `id`: Unique identifier for each player record
+- `game_id`: Reference to the saved game
+- `player_name`: Name of the player
+- `player_index`: Position in the turn order
+- `planet_type`: Type of planet ("Dark", "Glitch", or "Lost")
+- `health`: Current health points
+- `max_health`: Maximum health points
+- `missiles`: Current missile count
+- `max_missiles`: Maximum missile capacity
+- `is_alive`: Whether the player is still alive
+
+### Troubleshooting Database Issues
+
+#### File Permission Errors
+If you encounter file permission errors:
+1. Ensure your user account has write permissions in the project directory
+2. Try running the application as administrator
+3. Check if any antivirus software is blocking file access
+
+#### Driver Not Found Error
+If you see "SQLite JDBC driver not found" error:
+1. Double-check that you've correctly added the JAR file to your classpath
+2. Verify you're using a compatible JDK version (Java 8 or higher recommended)
+3. Try downloading a different version of the SQLite JDBC driver
+
+#### Database Locked Errors
+If you see database locked errors:
+1. Ensure you don't have the database open in another program
+2. Check if multiple instances of the game are running simultaneously
+3. Restart your IDE and try again
 
 ## Game Controls
 
@@ -41,4 +102,12 @@ If you encounter database errors, ensure:
 - Defend: Increase defense (partial implementation)
 - Heal: Restore health points
 - Regenerate Missiles: Add more missiles to your arsenal
-- Save Game: Save the current game state to continue later 
+- Save Game: Save the current game state to continue later
+
+## Exploring the Database
+
+If you want to explore the database file:
+
+1. Download and install DB Browser for SQLite: https://sqlitebrowser.org/
+2. Open the `game_data.db` file using DB Browser
+3. You can view tables, execute SQL queries, and explore your saved games 

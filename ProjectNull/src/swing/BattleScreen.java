@@ -22,6 +22,7 @@ import classes.Bot;
 import classes.planets.AbyssPlanet;
 import classes.planets.GlitchPlanet;
 import classes.planets.LostPlanet;
+import database.DatabaseManager;
 
 public class BattleScreen extends JFrame {
     private static final Color BUTTON_COLOR = new Color(70, 70, 70, 200);
@@ -53,6 +54,7 @@ public class BattleScreen extends JFrame {
     private JLabel missileCountLabel;
     private int currentTurn = 0; // 0 = player's turn, 1+ = bot's turn (index+1)
     private List<Bot> activeBots;
+    private DatabaseManager dbManager;
 
     public BattleScreen(List<Player> players) {
         this.allPlayers = new ArrayList<>(players);
@@ -79,6 +81,9 @@ public class BattleScreen extends JFrame {
         logsPanel = new JPanel(new GridBagLayout());
         missilePanel = new JPanel(new GridBagLayout());
         gameOverPanel = new JPanel(new GridBagLayout());
+        
+        // Initialize database manager
+        dbManager = new DatabaseManager();
         
         createStatusPanel();
         createActionPanel();
@@ -311,6 +316,7 @@ public class BattleScreen extends JFrame {
         JButton defendButton = createStyledButton("DEFEND");
         JButton healButton = createStyledButton("HEAL");
         JButton regenerateButton = createStyledButton("REGENERATE MISSILES");
+        JButton saveGameButton = createStyledButton("SAVE GAME");
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -324,6 +330,9 @@ public class BattleScreen extends JFrame {
 
         gbc.gridy = 3;
         actionPanel.add(regenerateButton, gbc);
+        
+        gbc.gridy = 4;
+        actionPanel.add(saveGameButton, gbc);
 
         attackButton.addActionListener(e -> {
             // Check if there are any alive targets
@@ -362,6 +371,16 @@ public class BattleScreen extends JFrame {
             currentPlayer.regenerateMissiles();
             updateLogs();
             endPlayerTurn();
+        });
+
+        saveGameButton.addActionListener(e -> {
+            SaveGameDialog saveDialog = new SaveGameDialog(this);
+            saveDialog.setVisible(true);
+            
+            if (saveDialog.isConfirmed()) {
+                String saveName = saveDialog.getSaveName();
+                saveGame(saveName);
+            }
         });
     }
 
@@ -707,6 +726,32 @@ public class BattleScreen extends JFrame {
             }
         }
         return null;
+    }
+
+    /**
+     * Sets the current turn when loading a saved game
+     * @param turn The turn number to set
+     */
+    public void setCurrentTurn(int turn) {
+        this.currentTurn = turn;
+        processTurn(); // Process the current turn after setting it
+    }
+
+    private void saveGame(String saveName) {
+        // Save the current game state to the database
+        int gameId = dbManager.saveGame(saveName, allPlayers, currentTurn);
+        
+        if (gameId != -1) {
+            JOptionPane.showMessageDialog(this, 
+                                         "Game saved successfully!", 
+                                         "Game Saved", 
+                                         JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, 
+                                         "Failed to save game. Please try again.", 
+                                         "Save Error", 
+                                         JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static void main(String[] args) {
