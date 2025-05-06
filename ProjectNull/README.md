@@ -18,6 +18,19 @@ This is a turn-based strategy game where players control planets and battle agai
 
 ### Step 2: Add the Driver to Your Project
 
+#### In Visual Studio:
+1. Open your project in Visual Studio
+2. Right-click on your project in the Solution Explorer
+3. Select "Add" → "Reference..."
+4. Click "Browse" at the bottom
+5. Navigate to the downloaded SQLite JDBC JAR file and select it
+6. Click "Add" and then "OK"
+7. Alternatively, you can use NuGet Package Manager:
+   - Right-click on your project → "Manage NuGet Packages..."
+   - Click on "Browse" tab
+   - Search for "System.Data.SQLite"
+   - Click "Install" button
+
 #### In NetBeans:
 1. Right-click on your project in the Projects panel
 2. Select "Properties"
