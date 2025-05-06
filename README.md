@@ -1,31 +1,113 @@
-Bears are carnivoran mammals of the family Ursidae (/ˈɜːrsɪdiː, -daɪ/). They are classified as caniforms, or doglike carnivorans. Although only eight species of bears are extant, they are widespread, appearing in a wide variety of habitats throughout most of the Northern Hemisphere and partially in the Southern Hemisphere. Bears are found on the continents of North America, South America, and Eurasia. Common characteristics of modern bears include large bodies with stocky legs, long snouts, small rounded ears, shaggy hair, plantigrade paws with five nonretractile claws, and short tails.
+# Space Battle Game
 
-While the polar bear is mostly carnivorous, and the giant panda is mostly herbivorous, the remaining six species are omnivorous with varying diets. With the exception of courting individuals and mothers with their young, bears are typically solitary animals. They may be diurnal or nocturnal and have an excellent sense of smell. Despite their heavy build and awkward gait, they are adept runners, climbers, and swimmers. Bears use shelters, such as caves and logs, as their dens; most species occupy their dens during the winter for a long period of hibernation, up to 100 days.
+This is a turn-based strategy game where players control planets and battle against each other.
 
-Bears have been hunted since prehistoric times for their meat and fur; they have also been used for bear-baiting and other forms of entertainment, such as being made to dance. With their powerful physical presence, they play a prominent role in the arts, mythology, and other cultural aspects of various human societies. In modern times, bears have come under pressure through encroachment on their habitats and illegal trade in bear parts, including the Asian bile bear market. The IUCN lists six bear species as vulnerable or endangered, and even least concern species, such as the brown bear, are at risk of extirpation in certain countries. The poaching and international trade of these most threatened populations are prohibited, but still ongoing.
+## Game Features
 
-Etymology
-The English word "bear" comes from Old English bera and belongs to a family of names for the bear in Germanic languages, such as Swedish björn, also used as a first name. This form is conventionally said to be related to a Proto-Indo-European word for "brown", so that "bear" would mean "the brown one".[1][2] However, Ringe notes that while this etymology is semantically plausible, a word meaning "brown" of this form cannot be found in Proto-Indo-European. He suggests instead that "bear" is from the Proto-Indo-European word *ǵʰwḗr- ~ *ǵʰwér "wild animal".[3] This terminology for the animal originated as a taboo avoidance term: proto-Germanic tribes replaced their original word for bear—arkto—with this euphemistic expression out of fear that speaking the animal's true name might cause it to appear.[4][5] According to author Ralph Keyes, this is the oldest known euphemism.[6]
+- Turn-based combat system (Player → Bot 1 → Bot 2 → Bot 3 → Player)
+- Different types of planets with unique abilities
+- Attack with missiles, heal, defend, or regenerate missiles
+- Save and load game functionality using SQLite database
 
-Bear taxon names such as Arctoidea and Helarctos come from the ancient Greek ἄρκτος (arktos), meaning bear,[7] as do the names "arctic" and "antarctic", via the name of the constellation Ursa Major, the "Great Bear", prominent in the northern sky.[8]
+## Database Setup
 
-Bear taxon names such as Ursidae and Ursus come from Latin Ursus/Ursa, he-bear/she-bear.[8] The female first name "Ursula", originally derived from a Christian saint's name, means "little she-bear" (diminutive of Latin ursa). In Switzerland, the male first name "Urs" is especially popular, while the name of the canton and city of Bern is by legend derived from Bär, German for bear. The Germanic name Bernard (including Bernhardt and similar forms) means "bear-brave", "bear-hardy", or "bold bear".[9][10] The Old English name Beowulf is a kenning, "bee-wolf", for bear, in turn meaning a brave warrior.[11]
+### Step 1: Download SQLite JDBC Driver
 
-Taxonomy
-Further information: List of ursids
-The family Ursidae is one of nine families in the suborder Caniformia, or "doglike" carnivorans, within the order Carnivora. Bears' closest living relatives are the pinnipeds, canids, and musteloids.[12] (Some scholars formerly argued that bears are directly derived from canids and should not be classified as a separate family.)[13] Modern bears comprise eight species in three subfamilies: Ailuropodinae (monotypic with the giant panda), Tremarctinae (monotypic with the spectacled bear), and Ursinae (containing six species divided into one to three genera, depending on the authority). Nuclear chromosome analysis show that the karyotype of the six ursine bears is nearly identical, each having 74 chromosomes (see Ursid hybrid), whereas the giant panda has 42 chromosomes and the spectacled bear 52. These smaller numbers can be explained by the fusing of some chromosomes, and the banding patterns on these match those of the ursine species, but differ from those of procyonids, which supports the inclusion of these two species in Ursidae rather than in Procyonidae, where they had been placed by some earlier authorities.[14]
+1. Go to the SQLite JDBC GitHub releases page: https://github.com/xerial/sqlite-jdbc/releases
+2. Download the latest version JAR file (e.g., `sqlite-jdbc-3.42.0.0.jar`)
 
-Evolution
+### Step 2: Add the Driver to Your Project
 
-Plithocyon armagnacensis skull, a member of the extinct subfamily Hemicyoninae from the Miocene
-The earliest members of Ursidae belong to the extinct subfamily Amphicynodontinae, including Parictis (late Eocene to early middle Miocene, 38–18 Mya) and the slightly younger Allocyon (early Oligocene, 34–30 Mya), both from North America. These animals looked very different from today's bears, being small and raccoon-like in overall appearance, with diets perhaps more similar to that of a badger. Parictis does not appear in Eurasia and Africa until the Miocene.[15] It is unclear whether late-Eocene ursids were also present in Eurasia, although faunal exchange across the Bering land bridge may have been possible during a major sea level low stand as early as the late Eocene (about 37 Mya) and continuing into the early Oligocene.[16] European genera morphologically very similar to Allocyon, and to the much younger American Kolponomos (about 18 Mya),[17] are known from the Oligocene, including Amphicticeps and Amphicynodon.[16] There has been various morphological evidence linking amphicynodontines with pinnipeds, as both groups were semi-aquatic, otter-like mammals.[18][19][20] In addition to the support of the pinniped–amphicynodontine clade, other morphological and some molecular evidence supports bears being the closest living relatives to pinnipeds.[21][22][23][19][24][20]
+#### In NetBeans:
+1. Right-click on your project in the Projects panel
+2. Select "Properties"
+3. Select "Libraries" from the left panel
+4. Click on "Add JAR/Folder"
+5. Navigate to the downloaded SQLite JDBC JAR file and select it
+6. Click "Open" and then "OK"
 
+#### In Eclipse:
+1. Right-click on your project in the Package Explorer
+2. Select "Build Path" → "Configure Build Path"
+3. Select the "Libraries" tab
+4. Click "Add External JARs"
+5. Navigate to the downloaded SQLite JDBC JAR file and select it
+6. Click "Open" and then "OK"
 
-Life restoration of Arctotherium bonariense
-The raccoon-sized, dog-like Cephalogale is the oldest-known member of the subfamily Hemicyoninae, which first appeared during the middle Oligocene in Eurasia about 30 Mya.[16] The subfamily includes the younger genera Phoberocyon (20–15 Mya), and Plithocyon (15–7 Mya). A Cephalogale-like species gave rise to the genus Ursavus during the early Oligocene (30–28 Mya); this genus proliferated into many species in Asia and is ancestral to all living bears. Species of Ursavus subsequently entered North America, together with Amphicynodon and Cephalogale, during the early Miocene (21–18 Mya). Members of the living lineages of bears diverged from Ursavus between 15 and 20 Mya,[25][26] likely via the species Ursavus elmensis. Based on genetic and morphological data, the Ailuropodinae (pandas) were the first to diverge from other living bears about 19 Mya, although no fossils of this group have been found before about 11 Mya.[27][28]
+#### In IntelliJ IDEA:
+1. Go to File → Project Structure (or press Ctrl+Alt+Shift+S)
+2. Select "Libraries" from the left panel
+3. Click the "+" button and select "Java"
+4. Navigate to the downloaded SQLite JDBC JAR file and select it
+5. Click "OK" and then "Apply"
 
-The New World short-faced bears (Tremarctinae) differentiated from Ursinae following a dispersal event into North America during the mid-Miocene (about 13 Mya).[27] They invaded South America (≈2.5 or 1.2 Ma) following formation of the Isthmus of Panama.[29] Their earliest fossil representative is Plionarctos in North America (c. 10–2 Ma). This genus is probably the direct ancestor to the North American short-faced bears (genus Arctodus), the South American short-faced bears (Arctotherium), and the spectacled bears, Tremarctos, represented by both an extinct North American species (T. floridanus), and the lone surviving representative of the Tremarctinae, the South American spectacled bear (T. ornatus).[16]
+### Step 3: Verify Database Connectivity
 
+When you first save a game, the application will automatically:
+1. Create a `game_data.db` file in the root directory of your project
+2. Set up the necessary tables for storing game data
 
-Fossil of the cave bear (Ursus spelaeus), a relative of the brown bear and polar bear from the Pleistocene epoch in Europe
-The subfamily Ursinae experienced a dramatic proliferation of taxa about 5.3–4.5 Mya, coincident with major environmental changes; the first members of the genus Ursus appeared around this time. The sloth bear is a modern survivor of one of the earliest lineages to diverge during this radiation event (5.3 Mya); it took on its peculiar morphology, related to its diet of termites and ants, no later than by the early Pleistocene. By 3–4 Mya, the species Ursus minimus appears in the fossil record of Europe; apart from its size, it was nearly identical to today's Asian black bear. It is likely ancestral to all bears within Ursinae, perhaps aside from the sloth bear. Two lineages evolved from U. minimus: the black bears (including the sun bear, the Asian black bear, and the American black bear); and the brown bears (which includes the polar bear). Modern brown bears evolved from U. minimus via Ursus etruscus, which itself is ancestral to the extinct Pleistocene cave bear.[27] Species of Ursinae have migrated repeatedly into North America from Eurasia as early as 4 Mya during the early Pliocene.[30][31] The polar bear is the most recently evolved species and descended from a population of brown bears that became isolated in northern latitudes by glaciation 400,000 years ago.[32]
+To verify that your database is working correctly:
+1. Run the game
+2. Start a new game
+3. Make some moves and then click the "SAVE GAME" button
+4. Enter a name for your save
+5. Check that the save completes successfully
+
+### Database Structure
+
+The game uses two main tables:
+
+#### saved_games
+- `id`: Unique identifier for each saved game
+- `save_name`: Name given to the saved game
+- `save_date`: Timestamp when the game was saved
+- `current_turn`: Which player's turn it was when saved
+
+#### saved_players
+- `id`: Unique identifier for each player record
+- `game_id`: Reference to the saved game
+- `player_name`: Name of the player
+- `player_index`: Position in the turn order
+- `planet_type`: Type of planet ("Dark", "Glitch", or "Lost")
+- `health`: Current health points
+- `max_health`: Maximum health points
+- `missiles`: Current missile count
+- `max_missiles`: Maximum missile capacity
+- `is_alive`: Whether the player is still alive
+
+### Troubleshooting Database Issues
+
+#### File Permission Errors
+If you encounter file permission errors:
+1. Ensure your user account has write permissions in the project directory
+2. Try running the application as administrator
+3. Check if any antivirus software is blocking file access
+
+#### Driver Not Found Error
+If you see "SQLite JDBC driver not found" error:
+1. Double-check that you've correctly added the JAR file to your classpath
+2. Verify you're using a compatible JDK version (Java 8 or higher recommended)
+3. Try downloading a different version of the SQLite JDBC driver
+
+#### Database Locked Errors
+If you see database locked errors:
+1. Ensure you don't have the database open in another program
+2. Check if multiple instances of the game are running simultaneously
+3. Restart your IDE and try again
+
+## Game Controls
+
+- Attack: Select number of missiles and target
+- Defend: Increase defense (partial implementation)
+- Heal: Restore health points
+- Regenerate Missiles: Add more missiles to your arsenal
+- Save Game: Save the current game state to continue later
+
+## Exploring the Database
+
+If you want to explore the database file:
+
+1. Download and install DB Browser for SQLite: https://sqlitebrowser.org/
+2. Open the `game_data.db` file using DB Browser
+3. You can view tables, execute SQL queries, and explore your saved games 
