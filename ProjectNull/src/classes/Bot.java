@@ -18,11 +18,15 @@ public class Bot {
 
     public void makeMove(List<Player> allPlayers) {
         if (!botPlayer.isAlive()) {
+            System.out.println("[BOT] " + botPlayer.getName() + " is dead and cannot make a move.");
             return;
         }
 
         // Choose a random action (0: Attack, 1: Defend, 2: Heal, 3: Regenerate Missiles)
         int action = random.nextInt(4);
+
+        System.out.println("=====================");
+        System.out.println("[BOT TURN] " + botPlayer.getName() + " is making a move...");
 
         switch (action) {
             case 0: // Attack
@@ -39,29 +43,41 @@ public class Bot {
                         // Choose a random number of missiles (1 to max available)
                         int missiles = random.nextInt(botPlayer.getPlanet().getMissiles()) + 1;
                         botPlayer.attack(target, missiles);
-                        System.out.println(botPlayer.getName() + " attacks " + target.getName() + " with " + missiles + " missiles");
+                        System.out.println("[BOT ATTACK] " + botPlayer.getName() + " attacks " + target.getName() + " with " + missiles + " missiles");
+                        System.out.println("[TARGET] " + target.getName() + " health: " + target.getPlanet().getHealth() + "/" + target.getPlanet().getMaxHealth());
+                    } else {
+                        System.out.println("[BOT] " + botPlayer.getName() + " has no valid targets to attack.");
                     }
+                } else {
+                    System.out.println("[BOT] " + botPlayer.getName() + " has no missiles to attack.");
                 }
                 break;
 
             case 1: // Defend
                 botPlayer.defend();
-                System.out.println(botPlayer.getName() + " defends");
+                System.out.println("[BOT DEFEND] " + botPlayer.getName() + " defends");
                 break;
 
             case 2: // Heal
                 if (botPlayer.getPlanet().getHealth() < botPlayer.getPlanet().getMaxHealth()) {
                     botPlayer.heal();
-                    System.out.println(botPlayer.getName() + " heals");
+                    System.out.println("[BOT HEAL] " + botPlayer.getName() + " heals");
+                    System.out.println("[HEALTH] " + botPlayer.getName() + " health: " + botPlayer.getPlanet().getHealth() + "/" + botPlayer.getPlanet().getMaxHealth());
+                } else {
+                    System.out.println("[BOT] " + botPlayer.getName() + " is already at full health.");
                 }
                 break;
 
             case 3: // Regenerate Missiles
                 if (botPlayer.getPlanet().getMissiles() < botPlayer.getPlanet().getMaxMissiles()) {
                     botPlayer.regenerateMissiles();
-                    System.out.println(botPlayer.getName() + " regenerates missiles");
+                    System.out.println("[BOT REGEN] " + botPlayer.getName() + " regenerates missiles");
+                    System.out.println("[MISSILES] " + botPlayer.getName() + " missiles: " + botPlayer.getPlanet().getMissiles() + "/" + botPlayer.getPlanet().getMaxMissiles());
+                } else {
+                    System.out.println("[BOT] " + botPlayer.getName() + " already has maximum missiles.");
                 }
                 break;
         }
+        System.out.println("=====================");
     }
 } 

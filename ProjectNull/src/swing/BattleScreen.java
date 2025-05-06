@@ -1,6 +1,8 @@
 package swing;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -42,13 +44,14 @@ public class BattleScreen extends JFrame {
     private JPanel targetPanel;
     private JPanel logsPanel;
     private JPanel missilePanel;
+    private JPanel gameOverPanel;
     private JLabel statusLabel;
     private JTextArea logsArea;
-    private Timer botTimer;
+    private Timer turnTimer;
     private int selectedMissiles = 0;
     private JSlider missileSlider;
     private JLabel missileCountLabel;
-    private int currentBotIndex = 0;
+    private int currentTurn = 0; // 0 = player's turn, 1+ = bot's turn (index+1)
     private List<Bot> activeBots;
 
     public BattleScreen(List<Player> players) {
@@ -75,40 +78,29 @@ public class BattleScreen extends JFrame {
         targetPanel = new JPanel(new GridBagLayout());
         logsPanel = new JPanel(new GridBagLayout());
         missilePanel = new JPanel(new GridBagLayout());
+        gameOverPanel = new JPanel(new GridBagLayout());
         
         createStatusPanel();
         createActionPanel();
         createTargetPanel();
         createMissilePanel();
+        createGameOverPanel();
         createLogsPanel();
         createMainPanel();
         
-        // Initially hide target and missile panels
+        // Initially hide target, missile and gameOver panels
         targetPanel.setVisible(false);
         missilePanel.setVisible(false);
+        gameOverPanel.setVisible(false);
         
-        // Create bot timer
-        botTimer = new Timer(2000, e -> {
-            if (currentBotIndex < activeBots.size()) {
-                Bot currentBot = activeBots.get(currentBotIndex);
-                if (currentBot.getBotPlayer().isAlive()) {
-                    currentBot.makeMove(allPlayers);
-                    updateLogs();
-                }
-                currentBotIndex++;
-            } else {
-                // All bots have moved, reset index and stop timer
-                currentBotIndex = 0;
-                botTimer.stop();
-                
-                // After all bots have moved, enable player actions
-                actionPanel.setVisible(true);
-                statusLabel.setText("Your turn! Choose your action!");
-                updateLogs();
-                updateMissilePanel();
-            }
-        });
-        botTimer.setRepeats(true);
+        // Create turn timer
+        turnTimer = new Timer(2000, e -> processTurn());
+        turnTimer.setRepeats(false);
+        
+        // Initialize the game
+        updateStatus();
+        updateLogs();
+        updateMissilePanel();
     }
 
     private void createLogsPanel() {
@@ -139,36 +131,86 @@ public class BattleScreen extends JFrame {
         logsPanel.add(scrollPane, gbc);
     }
 
-    private void updateLogs() {
-        StringBuilder logs = new StringBuilder();
-        logs.append("=== BATTLE STATUS ===\n\n");
-        
-        for (Player player : allPlayers) {
-            logs.append(player.getName())
-                .append(" (")
-                .append(player.getPlanet().getName())
-                .append(")");
-            
-            if (!player.isAlive()) {
-                logs.append(" [DEAD]");
-            }
-            
-            logs.append("\n");
-            logs.append("Health: ")
-                .append(player.getPlanet().getHealth())
-                .append("/")
-                .append(player.getPlanet().getMaxHealth())
-                .append("\n");
-            logs.append("Missiles: ")
-                .append(player.getPlanet().getMissiles())
-                .append("/")
-                .append(player.getPlanet().getMaxMissiles())
-                .append("\n");
-            logs.append("-------------------\n\n");
+    private void processTurn() {
+        // Check if game is over first
+        if (checkGameOver()) {
+            return;
         }
         
-        logsArea.setText(logs.toString());
-        logsArea.setCaretPosition(logsArea.getDocument().getLength());
+        // Process current turn
+        if (currentTurn == 0) {
+            // Player's turn - do nothing here, we wait for player input
+            System.out.println("\n\n=== PLAYER TURN ===");
+            actionPanel.setVisible(true);
+            statusLabel.setText("Your turn! Choose your action!");
+            
+            // Recreate target panel to ensure it has updated alive/dead status
+            targetPanel.removeAll();
+            createTargetPanel();
+        } else {
+            // Bot's turn
+            int botIndex = currentTurn - 1;
+            if (botIndex < bots.size()) {
+                Bot bot = bots.get(botIndex);
+                if (bot.getBotPlayer().isAlive()) {
+                    System.out.println("\n\n=== BOT " + (botIndex + 1) + " TURN ===");
+                    statusLabel.setText(bot.getBotPlayer().getName() + "'s turn...");
+                    bot.makeMove(allPlayers);
+                    updateLogs();
+                    updateMissilePanel();
+                } else {
+                    System.out.println("Bot " + (botIndex + 1) + " is dead, skipping turn");
+                }
+                // Move to next turn
+                advanceTurn();
+            } else {
+                // If we've gone past the last bot, go back to player
+                currentTurn = 0;
+                processTurn();
+            }
+        }
+    }
+
+    private void advanceTurn() {
+        // Move to next turn
+        currentTurn++;
+        
+        // If we've gone through all bots, go back to player
+        if (currentTurn > bots.size()) {
+            System.out.println("All bots have taken their turn, back to player");
+            currentTurn = 0;
+        }
+        
+        // Skip dead players/bots
+        if (currentTurn == 0) {
+            if (!currentPlayer.isAlive()) {
+                System.out.println("Player is dead, game over");
+                showGameOver(false);
+                return;
+            }
+        } else {
+            int botIndex = currentTurn - 1;
+            if (botIndex < bots.size() && !bots.get(botIndex).getBotPlayer().isAlive()) {
+                System.out.println("Bot " + (botIndex + 1) + " is dead, skipping turn");
+                advanceTurn(); // Skip this bot
+                return;
+            }
+        }
+        
+        // Start the next turn after a delay
+        if (currentTurn > 0) { // Only use timer for bot turns
+            System.out.println("Starting Bot " + currentTurn + "'s turn in 2 seconds...");
+            turnTimer.start();
+        } else {
+            System.out.println("Starting Player's turn");
+            processTurn(); // Immediately process player turn
+        }
+    }
+
+    private void endPlayerTurn() {
+        System.out.println("Player turn ended, moving to bots' turns");
+        actionPanel.setVisible(false);
+        advanceTurn();
     }
 
     private void createMainPanel() {
@@ -209,6 +251,10 @@ public class BattleScreen extends JFrame {
         gbc.gridy = 4;
         gbc.gridheight = 1;
         mainPanel.add(targetPanel, gbc);
+        
+        gbc.gridy = 1;
+        gbc.gridheight = 4;
+        mainPanel.add(gameOverPanel, gbc);
 
         // Right side logs panel
         gbc.gridx = 1;
@@ -285,6 +331,10 @@ public class BattleScreen extends JFrame {
                 .anyMatch(p -> p != currentPlayer && p.isAlive());
             
             if (hasAliveTargets) {
+                // Recreate the target panel to ensure it's updated
+                targetPanel.removeAll();
+                createTargetPanel();
+                
                 statusLabel.setText("Select number of missiles!");
                 actionPanel.setVisible(false);
                 missilePanel.setVisible(true);
@@ -297,21 +347,21 @@ public class BattleScreen extends JFrame {
             statusLabel.setText("Defending...");
             currentPlayer.defend();
             updateLogs();
-            startBotTurn();
+            endPlayerTurn();
         });
 
         healButton.addActionListener(e -> {
             statusLabel.setText("Healing...");
             currentPlayer.heal();
             updateLogs();
-            startBotTurn();
+            endPlayerTurn();
         });
 
         regenerateButton.addActionListener(e -> {
             statusLabel.setText("Regenerating missiles...");
             currentPlayer.regenerateMissiles();
             updateLogs();
-            startBotTurn();
+            endPlayerTurn();
         });
     }
 
@@ -339,13 +389,17 @@ public class BattleScreen extends JFrame {
                                                         target.getPlanet().getName());
                 final Player finalTarget = target;
                 targetButton.addActionListener(e -> {
+                    // Double-check the target is still alive before attacking
+                    if (!finalTarget.isAlive()) {
+                        statusLabel.setText("Target is already destroyed!");
+                        return;
+                    }
                     statusLabel.setText("Attacking " + finalTarget.getName() + " with " + selectedMissiles + " missiles...");
                     currentPlayer.attack(finalTarget, selectedMissiles);
                     targetPanel.setVisible(false);
-                    actionPanel.setVisible(true);
                     updateLogs();
                     updateMissilePanel();
-                    startBotTurn();
+                    endPlayerTurn();
                 });
                 
                 gbc.gridy = buttonIndex++;
@@ -369,6 +423,9 @@ public class BattleScreen extends JFrame {
             actionPanel.setVisible(true);
             statusLabel.setText("Choose your action!");
         });
+        
+        targetPanel.revalidate();
+        targetPanel.repaint();
     }
 
     private void createMissilePanel() {
@@ -523,20 +580,133 @@ public class BattleScreen extends JFrame {
         }
     }
 
-    private void startBotTurn() {
-        actionPanel.setVisible(false);
-        statusLabel.setText("Bots are making their moves...");
+    private boolean checkGameOver() {
+        // Check if the player is dead
+        if (!currentPlayer.isAlive()) {
+            showGameOver(false);
+            return true;
+        }
         
-        // Update active bots list to include only alive bots
-        activeBots.clear();
-        for (Bot bot : bots) {
-            if (bot.getBotPlayer().isAlive()) {
-                activeBots.add(bot);
+        // Check if all enemies are dead (player wins)
+        boolean allEnemiesDead = true;
+        for (Player player : allPlayers) {
+            if (player != currentPlayer && player.isAlive()) {
+                allEnemiesDead = false;
+                break;
             }
         }
         
-        currentBotIndex = 0; // Reset bot index
-        botTimer.start();
+        if (allEnemiesDead) {
+            showGameOver(true);
+            return true;
+        }
+        
+        return false;
+    }
+
+    private void updateLogs() {
+        StringBuilder logs = new StringBuilder();
+        logs.append("=== BATTLE STATUS ===\n\n");
+        
+        for (Player player : allPlayers) {
+            logs.append(player.getName())
+                .append(" (")
+                .append(player.getPlanet().getName())
+                .append(")");
+            
+            if (!player.isAlive()) {
+                logs.append(" [DEAD]");
+            }
+            
+            logs.append("\n");
+            logs.append("Health: ")
+                .append(player.getPlanet().getHealth())
+                .append("/")
+                .append(player.getPlanet().getMaxHealth())
+                .append("\n");
+            logs.append("Missiles: ")
+                .append(player.getPlanet().getMissiles())
+                .append("/")
+                .append(player.getPlanet().getMaxMissiles())
+                .append("\n");
+            logs.append("-------------------\n\n");
+        }
+        
+        logsArea.setText(logs.toString());
+        logsArea.setCaretPosition(logsArea.getDocument().getLength());
+    }
+
+    private void createGameOverPanel() {
+        gameOverPanel.setOpaque(false);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(20, 20, 20, 20);
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+
+        // Title label
+        JLabel titleLabel = new JLabel("", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 48));
+        titleLabel.setForeground(TEXT_COLOR);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gameOverPanel.add(titleLabel, gbc);
+
+        // Message label
+        JLabel messageLabel = new JLabel("", SwingConstants.CENTER);
+        messageLabel.setFont(TITLE_FONT);
+        messageLabel.setForeground(TEXT_COLOR);
+        gbc.gridy = 1;
+        gameOverPanel.add(messageLabel, gbc);
+
+        // Exit button
+        JButton exitButton = createStyledButton("EXIT GAME");
+        gbc.gridy = 2;
+        gameOverPanel.add(exitButton, gbc);
+
+        exitButton.addActionListener(e -> {
+            System.exit(0);
+        });
+
+        // Store labels as properties for later access
+        titleLabel.setName("titleLabel");
+        messageLabel.setName("messageLabel");
+    }
+
+    private void showGameOver(boolean playerWon) {
+        // Hide all other panels
+        statusPanel.setVisible(false);
+        actionPanel.setVisible(false);
+        targetPanel.setVisible(false);
+        missilePanel.setVisible(false);
+        
+        // Get the title and message labels
+        JLabel titleLabel = (JLabel) findComponentByName(gameOverPanel, "titleLabel");
+        JLabel messageLabel = (JLabel) findComponentByName(gameOverPanel, "messageLabel");
+        
+        if (playerWon) {
+            titleLabel.setText("VICTORY!");
+            titleLabel.setForeground(HEALTH_COLOR);
+            messageLabel.setText("You have defeated all enemies!");
+        } else {
+            titleLabel.setText("DEFEAT!");
+            titleLabel.setForeground(DAMAGE_COLOR);
+            messageLabel.setText("Your planet has been destroyed!");
+        }
+        
+        // Show game over panel
+        gameOverPanel.setVisible(true);
+    }
+    
+    // Helper method to find a component by name
+    private Component findComponentByName(Container container, String name) {
+        for (Component component : container.getComponents()) {
+            if (name.equals(component.getName())) {
+                return component;
+            }
+        }
+        return null;
     }
 
     public static void main(String[] args) {
