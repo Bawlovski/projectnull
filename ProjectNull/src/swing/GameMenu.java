@@ -8,8 +8,16 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import classes.Player;
+import classes.Planet;
+import classes.planets.AbyssPlanet;
+import classes.planets.GlitchPlanet;
+import classes.planets.LostPlanet;
+import database.DatabaseManager;
 
 public class GameMenu extends JFrame {
     private static final Color BUTTON_COLOR = new Color(70, 70, 70, 200);
@@ -18,7 +26,15 @@ public class GameMenu extends JFrame {
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 48);
     private static final Font BUTTON_FONT = new Font("Arial", Font.BOLD, 24);
 
+    private LanguageManager languageManager;
+    private JLabel titleLabel;
+    private JButton playButton;
+    private JButton loadGameButton;
+    private JButton optionsButton;
+    private JButton exitButton;
+
     public GameMenu() {
+        languageManager = LanguageManager.getInstance();
         setTitle("Game Menu");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -50,7 +66,7 @@ public class GameMenu extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Title
-        JLabel titleLabel = new JLabel("PROJECT NULL");
+        titleLabel = new JLabel(languageManager.getText("GAME_TITLE"));
         titleLabel.setFont(TITLE_FONT);
         titleLabel.setForeground(TEXT_COLOR);
         gbc.gridx = 0;
@@ -58,18 +74,23 @@ public class GameMenu extends JFrame {
         mainPanel.add(titleLabel, gbc);
 
         // Play button
-        JButton playButton = createStyledButton("JUGAR");
+        playButton = createStyledButton(languageManager.getText("PLAY"));
         gbc.gridy = 1;
         mainPanel.add(playButton, gbc);
 
-        // Options button
-        JButton optionsButton = createStyledButton("OPCIONES");
+        // Load Game button
+        loadGameButton = createStyledButton(languageManager.getText("LOAD_GAME"));
         gbc.gridy = 2;
+        mainPanel.add(loadGameButton, gbc);
+
+        // Options button
+        optionsButton = createStyledButton(languageManager.getText("OPTIONS"));
+        gbc.gridy = 3;
         mainPanel.add(optionsButton, gbc);
 
         // Exit button
-        JButton exitButton = createStyledButton("SALIR");
-        gbc.gridy = 3;
+        exitButton = createStyledButton(languageManager.getText("EXIT"));
+        gbc.gridy = 4;
         mainPanel.add(exitButton, gbc);
 
         // Add action listeners
@@ -78,14 +99,75 @@ public class GameMenu extends JFrame {
             new TeamMenu().setVisible(true); // Open TeamMenu
         });
 
+        loadGameButton.addActionListener(e -> {
+            DatabaseManager dbManager = new DatabaseManager();
+            LoadGameDialog loadDialog = new LoadGameDialog(this, dbManager);
+            loadDialog.setVisible(true);
+            
+            if (loadDialog.isConfirmed()) {
+                int gameId = loadDialog.getSelectedGameId();
+                DatabaseManager.GameSaveData saveData = dbManager.loadGame(gameId);
+                
+                if (saveData != null) {
+                    // Recreate players from save data
+                    List<Player> players = new ArrayList<>();
+                    
+                    for (DatabaseManager.PlayerSaveData playerData : saveData.getPlayers()) {
+                        // Create appropriate planet based on type
+                        Planet planet;
+                        switch (playerData.getPlanetType()) {
+                            case "Dark":
+                                planet = new AbyssPlanet();
+                                break;
+                            case "Glitch":
+                                planet = new GlitchPlanet();
+                                break;
+                            case "Lost":
+                                planet = new LostPlanet();
+                                break;
+                            default:
+                                planet = new AbyssPlanet();
+                        }
+                        
+                        // Set planet state
+                        planet.setHealth(playerData.getHealth());
+                        planet.setMissiles(playerData.getMissiles());
+                        
+                        // Create player with restored state
+                        Player player = new Player(playerData.getName(), planet);
+                        players.add(player);
+                    }
+                    
+                    // Start battle screen with loaded players
+                    this.dispose(); // Close current window
+                    BattleScreen battleScreen = new BattleScreen(players);
+                    battleScreen.setCurrentTurn(saveData.getCurrentTurn());
+                    battleScreen.setVisible(true);
+                }
+            }
+        });
+
         optionsButton.addActionListener(e -> {
-            // TODO: Implement options menu
-            JOptionPane.showMessageDialog(this, "Options menu coming soon!");
+            LanguageDialog languageDialog = new LanguageDialog(this);
+            languageDialog.setVisible(true);
+            
+            if (languageDialog.isConfirmed()) {
+                // Update all text elements with new language
+                updateTexts();
+            }
         });
 
         exitButton.addActionListener(e -> {
             System.exit(0);
         });
+    }
+
+    private void updateTexts() {
+        titleLabel.setText(languageManager.getText("GAME_TITLE"));
+        playButton.setText(languageManager.getText("PLAY"));
+        loadGameButton.setText(languageManager.getText("LOAD_GAME"));
+        optionsButton.setText(languageManager.getText("OPTIONS"));
+        exitButton.setText(languageManager.getText("EXIT"));
     }
 
     private JButton createStyledButton(String text) {
