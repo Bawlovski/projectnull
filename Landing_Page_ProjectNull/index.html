@@ -1,135 +1,322 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Null - Landing Page</title>
-    <link rel="stylesheet" href="styles.css">
+    <title data-i18n="title">Project Null | Space Battle Game</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Space+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="threejs-background"></div> <!-- Contenedor para Three.js -->
+    <div id="three-container"></div>
     
-    <header>
-        <h1 id="titulo">Project Null</h1>
-        <nav>
-            <ul>
-                <li><a href="#equipo">Equipo</a></li>
-                <li><a href="#descripcion">Descripción</a></li>
-                <li><a href="#enlaces">Enlaces</a></li>
-                <li><a href="#documentacion">Documentación</a></li>
-                <li><a href="#galeria">Galería</a></li>
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">Project<span>Null</span></a>
+            <div class="language-selector">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="es">ES</button>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#overview" data-i18n="nav.overview">Overview</a></li>
+                <li><a href="#features" data-i18n="nav.features">Features</a></li>
+                <li><a href="#planets" data-i18n="nav.planets">Planets</a></li>
+                <li><a href="#technical" data-i18n="nav.technical">Technical</a></li>
+                <li><a href="#download" data-i18n="nav.download">Download</a></li>
             </ul>
-        </nav>
-    </header>
-    
-    <section id="equipo">
-        <h2>Nuestro Equipo</h2>
-        <h3 style="font-size: 30px;">Daniel</h3>
-        <img id="imagen1" style="border-radius: 50%;" src="imgs/me.jpg">
-        
-        
-        <p style="width: 20%; text-align: left; align-items: center;margin: auto;">Principal y único desarrollador del proyecto, responsable de todas las funcionalidades del programa, incluyendo la presentación, la gestión de la base de datos, la calidad del código, entre otros aspectos.</p>
+            <button class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1 class="glow" data-i18n="hero.title">Project Null</h1>
+            <p class="subtitle" data-i18n="hero.subtitle">Strategic space battles with unique planetary combat systems</p>
+            <div class="hero-buttons">
+                <a href="#download" class="cta-button" data-i18n="hero.download">Download Now</a>
+                <a href="#features" class="cta-button secondary" data-i18n="hero.learn">Learn More</a>
+            </div>
+        </div>
     </section>
-    
 
-   
-
-
-   </section>
-    
-    <section id="descripcion">
-        <h2>Descripción del Juego</h2>
-        <p style="width: 20%; text-align: left; align-items: center;margin: auto;">
-            Project Null es un juego de estrategia por turnos en el que los jugadores controlan 
-            planetas en un universo , donde fuerzas desconocidas 
-            influyen en la guerra interplanetaria. 
-            Cada jugador elige un planeta con características únicas y debe sobrevivir enfrentándose a los demás.
-        </p>
-        <h2>Que tiene de especial ProjectNull</h2>
-        <p style="width: 20%; text-align: left; align-items: center;margin: auto;">
-            Project Null no solo contará con una sólida funcionalidad de código, sino que también incorporará mecánicas para los planetas. Estas mecánicas ofrecerán a los jugadores la opción de ejercer efectos especiales que influirán en los demás participantes        
-        </p>
+    <section id="overview" class="section overview">
+        <div class="container content-box">
+            <h2 data-i18n="overview.title">Game Overview</h2>
+            <div class="content-grid">
+                <div class="text-content">
+                    <p data-i18n="overview.text1">Project Null is an immersive space battle game where players command unique planets in strategic combat. The game combines tactical decision-making with unique planet abilities in a turn-based battle system.</p>
+                    
+                    <div class="highlight-box">
+                        <h3 data-i18n="overview.core">Core Gameplay</h3>
+                        <ul>
+                            <li data-i18n="overview.item1">Turn-based strategic combat</li>
+                            <li data-i18n="overview.item2">Multiple planet types with special abilities</li>
+                            <li data-i18n="overview.item3">Resource management and tactical choices</li>
+                            <li data-i18n="overview.item4">Single-player and multiplayer modes</li>
+                            <li data-i18n="overview.item5">Persistent game state with save/load system</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="image-placeholder">
+                    <div class="game-screenshot"></div>
+                </div>
+            </div>
+        </div>
     </section>
-    
-    <section id="enlaces">
-        <h2>Enlaces Importantes</h2>
-        <ul style="list-style: none;">
-            <li ><a href="https://github.com/Bawlovski/projectnull" target="_blank">Repositorio en GitHub</a></li>
-            <li><a href="https://trello.com/b/NKESo9bu/projectnull" target="_blank">Tablero de Trello</a></li>
+
+    <section id="features" class="section features">
+        <div class="container content-box">
+            <h2 data-i18n="features.title">Key Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚔️</div>
+                    <h3 data-i18n="features.combat.title">Strategic Combat</h3>
+                    <ul>
+                        <li data-i18n="features.combat.item1">Turn-based battle system</li>
+                        <li data-i18n="features.combat.item2">Multiple action options</li>
+                        <li data-i18n="features.combat.item3">Diminishing returns on missile damage</li>
+                        <li data-i18n="features.combat.item4">Health and missile management</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🌌</div>
+                    <h3 data-i18n="features.multiplayer.title">Multiplayer Support</h3>
+                    <ul>
+                        <li data-i18n="features.multiplayer.item1">Player vs Player battles</li>
+                        <li data-i18n="features.multiplayer.item2">AI-controlled opponents</li>
+                        <li data-i18n="features.multiplayer.item3">Team-based gameplay</li>
+                        <li data-i18n="features.multiplayer.item4">Online matchmaking (coming soon)</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3 data-i18n="features.save.title">Save System</h3>
+                    <ul>
+                        <li data-i18n="features.save.item1">Save game progress</li>
+                        <li data-i18n="features.save.item2">Load previous games</li>
+                        <li data-i18n="features.save.item3">Multiple save slots</li>
+                        <li data-i18n="features.save.item4">Persistent game state</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🖥️</div>
+                    <h3 data-i18n="features.ui.title">User Interface</h3>
+                    <ul>
+                        <li data-i18n="features.ui.item1">Modern, sleek design</li>
+                        <li data-i18n="features.ui.item2">Intuitive controls</li>
+                        <li data-i18n="features.ui.item3">Real-time battle status</li>
+                        <li data-i18n="features.ui.item4">Detailed game logs</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="planets" class="section planets">
+        <div class="container content-box">
+            <h2 data-i18n="planets.title">Planet Types</h2>
+            <div class="planet-grid">
+                <div class="planet-card dark">
+                    <h3 data-i18n="planets.abyss.name">Abyss Planet</h3>
+                    <div class="planet-stats">
+                        <div class="stat"><span data-i18n="planets.abyss.type">Type:</span> <span data-i18n="planets.abyss.typeVal">Dark</span></div>
+                        <div class="stat"><span data-i18n="planets.abyss.health">Health:</span> 200</div>
+                        <div class="stat"><span data-i18n="planets.abyss.dodge">Dodge:</span> 20%</div>
+                        <div class="stat"><span data-i18n="planets.abyss.regen">Missile Regen:</span> +30%</div>
+                    </div>
+                    <p data-i18n="planets.abyss.desc">High health planet with strong defense capabilities and enhanced evasion.</p>
+                </div>
+                
+                <div class="planet-card electric">
+                    <h3 data-i18n="planets.glitch.name">Glitch Planet</h3>
+                    <div class="planet-stats">
+                        <div class="stat"><span data-i18n="planets.glitch.type">Type:</span> <span data-i18n="planets.glitch.typeVal">Electric</span></div>
+                        <div class="stat"><span data-i18n="planets.glitch.damage">Damage Reduction:</span> 15% (50%)</div>
+                        <div class="stat"><span data-i18n="planets.glitch.shot">Double Shot:</span> 10%</div>
+                        <div class="stat"><span data-i18n="planets.glitch.power">Attack Power:</span> <span data-i18n="planets.glitch.powerVal">High</span></div>
+                    </div>
+                    <p data-i18n="planets.glitch.desc">Special glitch mechanics with unpredictable but powerful effects.</p>
+                </div>
+                
+                <div class="planet-card neutral">
+                    <h3 data-i18n="planets.lost.name">Lost Planet</h3>
+                    <div class="planet-stats">
+                        <div class="stat"><span data-i18n="planets.lost.type">Type:</span> <span data-i18n="planets.lost.typeVal">Neutral</span></div>
+                        <div class="stat"><span data-i18n="planets.lost.health">Health:</span> 150</div>
+                        <div class="stat"><span data-i18n="planets.lost.versatility">Versatility:</span> <span data-i18n="planets.lost.versatilityVal">High</span></div>
+                        <div class="stat"><span data-i18n="planets.lost.special">Special:</span> <span data-i18n="planets.lost.specialVal">Adaptive</span></div>
+                    </div>
+                    <p data-i18n="planets.lost.desc">Balanced stats with unique strategic advantages that adapt to play style.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="technical" class="section technical">
+        <div class="container content-box">
+            <h2 data-i18n="technical.title">Technical Features</h2>
+            <div class="tech-grid">
+                <div class="tech-column">
+                    <h3 data-i18n="technical.arch.title">Architecture</h3>
+                    <ul>
+                        <li data-i18n="technical.arch.item1">Built with Java Swing</li>
+                        <li data-i18n="technical.arch.item2">SQLite database for save management</li>
+                        <li data-i18n="technical.arch.item3">Object-oriented design</li>
+                        <li data-i18n="technical.arch.item4">Modular architecture</li>
+                        <li data-i18n="technical.arch.item5">Cross-platform compatibility</li>
+                    </ul>
+                </div>
+                
+                <div class="tech-column">
+                    <h3 data-i18n="technical.req.title">System Requirements</h3>
+                    <ul>
+                        <li data-i18n="technical.req.item1">Java Runtime Environment (JRE) 17+</li>
+                        <li data-i18n="technical.req.item2">SQLite JDBC driver</li>
+                        <li data-i18n="technical.req.item3">Minimum 4GB RAM</li>
+                        <li data-i18n="technical.req.item4">500MB free disk space</li>
+                        <li data-i18n="technical.req.item5">Windows/Mac/Linux compatible</li>
+                    </ul>
+                </div>
+                
+                <div class="tech-column">
+                    <h3 data-i18n="technical.modes.title">Game Modes</h3>
+                    <ul>
+                        <li><strong data-i18n="technical.modes.item1">New Game:</strong> <span data-i18n="technical.modes.item1desc">Custom team setup</span></li>
+                        <li><strong data-i18n="technical.modes.item2">Load Game:</strong> <span data-i18n="technical.modes.item2desc">Continue previous battles</span></li>
+                        <li><strong data-i18n="technical.modes.item3">Single Player:</strong> <span data-i18n="technical.modes.item3desc">vs AI opponents</span></li>
+                        <li><strong data-i18n="technical.modes.item4">Multiplayer:</strong> <span data-i18n="technical.modes.item4desc">Local or online</span></li>
+                        <li><strong data-i18n="technical.modes.item5">Challenge Mode:</strong> <span data-i18n="technical.modes.item5desc">Special scenarios</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="download" class="section download">
+        <div class="container content-box">
+            <h2 data-i18n="download.title">Download & Install</h2>
+            <div class="download-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3 data-i18n="download.step1.title">Download</h3>
+                    <p data-i18n="download.step1.desc">Get the game package from our official repository</p>
+                    <a href="#" class="download-button" data-i18n="download.step1.button">Download Now</a>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3 data-i18n="download.step2.title">Install Java</h3>
+                    <p data-i18n="download.step2.desc">Ensure Java 17+ is installed on your system</p>
+                    <a href="https://www.java.com" class="secondary-button" target="_blank" data-i18n="download.step2.button">Get Java</a>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3 data-i18n="download.step3.title">Run Game</h3>
+                    <p data-i18n="download.step3.desc">Execute the compile.bat file and launch the game</p>
+                    <a href="#" class="secondary-button" data-i18n="download.step3.button">Installation Guide</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section future">
+        <div class="container content-box">
+            <h2 data-i18n="future.title">Future Updates</h2>
+            <div class="update-grid">
+                <div class="update-card">
+                    <h3 data-i18n="future.content.title">Content</h3>
+                    <ul>
+                        <li data-i18n="future.content.item1">Additional planet types</li>
+                        <li data-i18n="future.content.item2">New game modes</li>
+                        <li data-i18n="future.content.item3">More battle scenarios</li>
+                    </ul>
+                </div>
+                
+                <div class="update-card">
+                    <h3 data-i18n="future.tech.title">Technical</h3>
+                    <ul>
+                        <li data-i18n="future.tech.item1">Enhanced AI</li>
+                        <li data-i18n="future.tech.item2">Improved networking</li>
+                        <li data-i18n="future.tech.item3">Performance optimizations</li>
+                    </ul>
+                </div>
+                
+                <div class="update-card">
+                    <h3 data-i18n="future.community.title">Community</h3>
+                    <ul>
+                        <li data-i18n="future.community.item1">More language options</li>
+                        <li data-i18n="future.community.item2">Modding support</li>
+                        <li data-i18n="future.community.item3">Community events</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <a href="#" class="logo">Project<span>Null</span></a>
+                    <p data-i18n="footer.tagline">Strategic Space Battle Game</p>
+                    <div class="version">Version 1.0</div>
+                </div>
+                
+                <div class="footer-links">
+                    <h3 data-i18n="footer.resources">Resources</h3>
+                    <ul>
+                        <li><a href="#" data-i18n="footer.docs">Documentation</a></li>
+                        <li><a href="#" data-i18n="footer.api">API Reference</a></li>
+                        <li><a href="#" data-i18n="footer.github">GitHub Repository</a></li>
+                        <li><a href="#" data-i18n="footer.press">Press Kit</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3 data-i18n="footer.community">Community</h3>
+                    <ul>
+                        <li><a href="#" data-i18n="footer.forums">Forums</a></li>
+                        <li><a href="#" data-i18n="footer.discord">Discord</a></li>
+                        <li><a href="#" data-i18n="footer.bugs">Bug Reports</a></li>
+                        <li><a href="#" data-i18n="footer.features">Feature Requests</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-social">
+                    <h3 data-i18n="footer.connect">Connect</h3>
+                    <div class="social-icons">
+                        <a href="#"><span class="icon-twitter"></span></a>
+                        <a href="#"><span class="icon-github"></span></a>
+                        <a href="#"><span class="icon-discord"></span></a>
+                        <a href="#"><span class="icon-youtube"></span></a>
+                    </div>
+                    <div class="contact-email">contact@projectnullgame.com</div>
+                </div>
+            </div>
             
-        </ul>
-    </section>
-    
-    <section id="documentacion">
-        <h2>Documentación</h2>
-        <p>DIAGRAMA DE CLASES: (En revision)</p>
-        <img src="imgs/dgrm0.2.png"></img>
-        <p>DIAGRAMA DE CLASES Swing: (En creación)</p>
-    </section>
-    
-    <section id="galeria">
-        <h2>Galería del Juego</h2>
-        <p>Mockups y, en el futuro, capturas del juego.</p>
-        <p>Menu inical del juego</p>
-        <img style="height: 500px; width: 750px;" src="imgs/MockUp/MainWindow.png">
-        <p>Menu de creacion de jugadores</p>
-        <img style="height: 500px; width: 750px;" src="imgs/MockUp/player_create.png">
-        <p>Ventana de juego</p>
-        <img style="height: 500px; width: 750px;" src="imgs/MockUp/play_game_window.png">
-
-    </section>
-    
-    
-       
-    <script src="script.js"></script>
+            <div class="footer-bottom">
+                <p data-i18n="footer.copyright">&copy; 2025 Project Null Team. All rights reserved.</p>
+                <div class="legal-links">
+                    <a href="#" data-i18n="footer.privacy">Privacy Policy</a>
+                    <a href="#" data-i18n="footer.terms">Terms of Service</a>
+                    <a href="#" data-i18n="footer.license">License</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script>
-        // Configuración básica de la escena
-        const scene = new THREE.Scene();
-        const camara = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('threejs-background').appendChild(renderer.domElement); 
-
-        // Crear un fondo de estrellas
-        const stg = new THREE.BufferGeometry();
-        const stm = new THREE.PointsMaterial({ color: 0xffffff });
-
-        const ec = 10000;
-        const p = new Float32Array(ec * 3);
-
-        for (let i = 0; i < ec; i++) {
-            p[i * 3] = (Math.random() - 0.5) * 2000; // X
-            p[i * 3 + 1] = (Math.random() - 0.5) * 2000; // Y
-            p[i * 3 + 2] = (Math.random() - 0.5) * 2000; // Z
-        }
-
-        stg.setAttribute('position', new THREE.BufferAttribute(p, 3));
-        const stars = new THREE.Points(stg, stm);
-        scene.add(stars);
-
-        
-        camara.position.z = 5;
-
-        
-        function animate() {
-            requestAnimationFrame(animate);
-            stars.rotation.x += 0.0005;
-            stars.rotation.y += 0.0005;
-            renderer.render(scene, camara);
-        }
-
-        animate();
-
-        
-        window.addEventListener('resize', () => {
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            camara.aspect = window.innerWidth / window.innerHeight;
-            camara.updateProjectionMatrix();
-        });
-    </script>
-
-   
+    <script src="js/threeScene.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
