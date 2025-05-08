@@ -403,3 +403,26 @@ function createStars() {
         starsContainer.appendChild(star);
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Make diagrams expandable
+    const diagrams = document.querySelectorAll('.diagram-scrollable');
+    diagrams.forEach(diagram => {
+        diagram.addEventListener('click', function() {
+            this.classList.toggle('expanded');
+        });
+    });
+    
+    // Re-render mermaid diagrams after expansion to fix rendering issues
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.attributeName === 'class') {
+                mermaid.init();
+            }
+        });
+    });
+    
+    diagrams.forEach(diagram => {
+        observer.observe(diagram, { attributes: true });
+    });
+});

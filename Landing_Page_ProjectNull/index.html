@@ -8,6 +8,28 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Space+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({ 
+                startOnLoad: true,
+                theme: 'dark',
+                flowchart: { 
+                    useMaxWidth: false,
+                    htmlLabels: true
+                },
+                er: {
+                    useMaxWidth: false,
+                    htmlLabels: true
+                },
+                securityLevel: 'loose',
+                fontFamily: '"Space Mono", monospace'
+            });
+            
+            // Force re-render of all diagrams after initialization
+            mermaid.init(undefined, '.mermaid');
+        });
+    </script>
 </head>
 <body>
     <div id="three-container"></div>
@@ -207,9 +229,295 @@
         <div class="container content-box">
             <h2 data-i18n="class.title">Class Diagram</h2>
             <div class="diagram-container">
-                <div class="diagram-image">
-                    <!-- Placeholder for class diagram -->
-                    <div class="diagram-placeholder" data-i18n="class.placeholder">Class Diagram Image</div>
+                <div class="diagram-scrollable">
+                    <div class="mermaid">
+                        classDiagram
+
+        class Bot {
+            -botPlayer: Player
+            -random: Random
+            +Bot(player: Player)
+            +getBotPlayer(): Player
+            +makeMove(allPlayers: List~Player~): void
+        }
+
+        class Game {
+            -players: List~Player~
+            -scanner: Scanner
+            -gameRunning: boolean
+            +Game()
+            +addPlayer(player: Player): void
+            +startGame(): void
+            -getValidChoice(min: int, max: int): int
+        }
+
+        class Planet {
+            #name: String
+            #type: String
+            #health: int
+            #maxHealth: int
+            #missiles: int
+            #maxMissiles: int
+            #defense: int
+            #attack: int
+            +Planet(name: String, type: String, health: int, missiles: int, defense: int, attack: int)
+            +getName(): String
+            +getType(): String
+            +getHealth(): int
+            +setHealth(health: int): void
+            +getMaxHealth(): int
+            +getMissiles(): int
+            +setMissiles(missiles: int): void
+            +getMaxMissiles(): int
+            +getDefense(): int
+            +getAttack(): int
+            +isAlive(): boolean
+            +takeDamage(damage: int): void
+            +useMissile(): boolean
+            +regenerateMissiles(): void
+            +heal(): void
+            +toString(): String
+        }
+
+        class Player {
+            -name: String
+            -planet: Planet
+            -wins: int
+            -losses: int
+            +Player(name: String, planet: Planet)
+            +getName(): String
+            +getPlanet(): Planet
+            +setPlanet(planet: Planet): void
+            +getWins(): int
+            +getLosses(): int
+            +addWin(): void
+            +addLoss(): void
+            +isAlive(): boolean
+            +attack(target: Player, missiles: int): void
+            +heal(): void
+            +regenerateMissiles(): void
+            +defend(): void
+            +toString(): String
+        }
+
+        class DatabaseManager {
+            -connection: Connection
+            +DatabaseManager()
+            -initializeDatabase(): void
+            +connect(): void
+            +disconnect(): void
+            +saveGame(saveName: String, players: List~Player~, currentTurn: int): int
+            +loadGame(gameId: int): GameSaveData
+            +getSavedGamesList(): List~GameSaveInfo~
+            +deleteGame(gameId: int): boolean
+        }
+
+        class DatabaseManager.GameSaveInfo {
+            -id: int
+            -name: String
+            -date: String
+            +GameSaveInfo(id: int, name: String, date: String)
+            +getId(): int
+            +getName(): String
+            +getDate(): String
+            +toString(): String
+        }
+
+        class DatabaseManager.GameSaveData {
+            -id: int
+            -name: String
+            -currentTurn: int
+            -players: List~PlayerSaveData~
+            +GameSaveData(id: int, name: String, currentTurn: int, players: List~PlayerSaveData~)
+            +getId(): int
+            +getName(): String
+            +getCurrentTurn(): int
+            +getPlayers(): List~PlayerSaveData~
+        }
+
+        class DatabaseManager.PlayerSaveData {
+            -name: String
+            -index: int
+            -planetType: String
+            -health: int
+            -maxHealth: int
+            -missiles: int
+            -maxMissiles: int
+            -alive: boolean
+            +PlayerSaveData(name: String, index: int, planetType: String, health: int, maxHealth: int, missiles: int, maxMissiles: int, alive: boolean)
+            +getName(): String
+            +getIndex(): int
+            +getPlanetType(): String
+            +getHealth(): int
+            +getMaxHealth(): int
+            +getMissiles(): int
+            +getMaxMissiles(): int
+            +isAlive(): boolean
+        }
+
+        class BackgroundPanel {
+            -background: Image
+            +BackgroundPanel(imagePath: String)
+            +paintComponent(g: Graphics): void
+        }
+
+        class BattleScreen {
+            -currentPlayer: Player
+            -allPlayers: List~Player~
+            -bots: List~Bot~
+            -mainPanel: JPanel
+            -statusPanel: JPanel
+            -actionPanel: JPanel
+            -targetPanel: JPanel
+            -logsPanel: JPanel
+            -missilePanel: JPanel
+            -gameOverPanel: JPanel
+            -statusLabel: JLabel
+            -logsArea: JTextArea
+            -turnTimer: Timer
+            -selectedMissiles: int
+            -missileSlider: JSlider
+            -missileCountLabel: JLabel
+            -currentTurn: int
+            -activeBots: List~Bot~
+            -dbManager: DatabaseManager
+            +BattleScreen(players: List~Player~)
+            -createLogsPanel()
+            -processTurn()
+            -advanceTurn()
+            -endPlayerTurn()
+            -createMainPanel()
+            -createStatusPanel()
+            -createActionPanel()
+            -createTargetPanel()
+            -createMissilePanel()
+            -updateMissilePanel()
+            -createStatusBar()
+            -createStyledButton()
+            -updateStatus()
+            -checkGameOver()
+            -updateLogs()
+            -createGameOverPanel()
+            -showGameOver()
+            -findComponentByName()
+            -saveGame()
+        }
+
+        class GameMenu {
+            -languageManager: LanguageManager
+            -titleLabel: JLabel
+            -playButton: JButton
+            -loadGameButton: JButton
+            -optionsButton: JButton
+            -exitButton: JButton
+            +GameMenu()
+            -createMainPanel()
+            -updateTexts()
+            -createStyledButton()
+        }
+
+        class LanguageDialog {
+            -languageSelector: JComboBox~String~
+            -confirmed: boolean
+            -languageManager: LanguageManager
+            +LanguageDialog(parent: JFrame)
+            +isConfirmed(): boolean
+        }
+
+        class LanguageManager {
+            -currentLanguage: String
+            -translations: Map~String,Map~String,String~~
+            +getInstance(): LanguageManager
+            +setLanguage(language: String)
+            +getCurrentLanguage(): String
+            +getText(key: String): String
+        }
+
+        class LoadGameDialog {
+            -savedGamesList: JList~GameSaveInfo~
+            -listModel: DefaultListModel~GameSaveInfo~
+            -dbManager: DatabaseManager
+            -confirmed: boolean
+            -selectedGameId: int
+            +LoadGameDialog(parent: JFrame, dbManager: DatabaseManager)
+            -loadSavedGames()
+            +isConfirmed(): boolean
+            +getSelectedGameId(): int
+        }
+
+        class TeamMenu {
+            -players: List~Player~
+            -planetSelectors: JComboBox~String~[]
+            -nameFields: JTextField[]
+            +TeamMenu()
+            -createMainPanel()
+            -createPlayerPanel()
+            -createPlayer()
+            -createStyledButton()
+        }
+
+        class SaveGameDialog {
+            -saveNameField: JTextField
+            -confirmed: boolean
+            +SaveGameDialog(parent: JFrame)
+            +isConfirmed(): boolean
+            +getSaveName(): String
+        }
+
+        Bot --> Player: uses
+        Game --> Player: contains
+        Player --> Planet: has-a
+        Planet <|-- AbyssPlanet
+        Planet <|-- GlitchPlanet
+        Planet <|-- LostPlanet
+        
+        BattleScreen --> Player
+        BattleScreen --> Bot
+        BattleScreen --> DatabaseManager
+        BattleScreen --> JPanel
+        BattleScreen --> JLabel
+        BattleScreen --> JTextArea
+        BattleScreen --> Timer
+        BattleScreen --> JSlider
+        
+        GameMenu --> LanguageManager
+        GameMenu --> TeamMenu
+        GameMenu --> LoadGameDialog
+        GameMenu --> LanguageDialog
+        GameMenu --> JPanel
+        GameMenu --> JLabel
+        GameMenu --> JButton
+        
+        LanguageDialog --> LanguageManager
+        LanguageDialog --> JComboBox
+        
+        LoadGameDialog --> DatabaseManager
+        LoadGameDialog --> JList
+        
+        TeamMenu --> Player
+        TeamMenu --> AbyssPlanet
+        TeamMenu --> GlitchPlanet
+        TeamMenu --> LostPlanet
+        TeamMenu --> JPanel
+        TeamMenu --> JTextField
+        TeamMenu --> JComboBox
+        TeamMenu --> JButton
+        
+        BackgroundPanel --> JPanel
+        BackgroundPanel --> Image
+        
+        DatabaseManager --> Connection
+        DatabaseManager --> Player
+        DatabaseManager --> Planet
+        
+        DatabaseManager.GameSaveInfo --|> Object
+        DatabaseManager.GameSaveData --|> Object
+        DatabaseManager.PlayerSaveData --|> Object
+        
+        LoadGameDialog --> DatabaseManager.GameSaveInfo
+        BattleScreen --> DatabaseManager.GameSaveData
+        GameMenu --> DatabaseManager.GameSaveData
+            </div>
                 </div>
                 <div class="diagram-description">
                     <p data-i18n="class.text1">The class diagram shows the main components of the game architecture and their relationships.</p>
@@ -228,17 +536,39 @@
         <div class="container content-box">
             <h2 data-i18n="database.title">Database Diagram</h2>
             <div class="diagram-container">
-                <div class="diagram-image">
-                    <!-- Placeholder for database diagram -->
-                    <div class="diagram-placeholder" data-i18n="database.placeholder">Database ER Diagram</div>
+                <div class="diagram-scrollable">
+                    <div class="mermaid">
+                        erDiagram
+                            saved_games ||--o{ saved_players : "1:N"
+                            
+                            saved_games {
+                                int id PK
+                                string save_name
+                                timestamp save_date
+                                int current_turn
+                            }
+                            
+                            saved_players {
+                                int id PK
+                                int game_id FK
+                                string player_name
+                                int player_index
+                                string planet_type
+                                int health
+                                int max_health
+                                int missiles
+                                int max_missiles
+                                boolean is_alive
+                            }
+                    </div>
                 </div>
                 <div class="diagram-description">
                     <p data-i18n="database.text1">The database schema stores all game state and player progress.</p>
                     <ul>
                         <li data-i18n="database.item1">Player profiles and statistics</li>
-                        <li data-i18n="database.item2">Saved game states</li>
-                        <li data-i18n="database.item3">Planet configurations</li>
-                        <li data-i18n="database.item4">Battle history records</li>
+                        <li data-i18n="database.item2">Saved game states with turn information</li>
+                        <li data-i18n="database.item3">Planet configurations and current status</li>
+                        <li data-i18n="database.item4">Relationships between games and their players</li>
                     </ul>
                 </div>
             </div>
