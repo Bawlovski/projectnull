@@ -76,7 +76,23 @@ document.addEventListener('DOMContentLoaded', function() {
             "footer.press": "Press Kit",
             "footer.community": "Community",
             "footer.follow": "Follow Us",
-            "footer.copyright": "© 2023 Cosmic Odyssey. All rights reserved."
+            "footer.copyright": "© 2023 Cosmic Odyssey. All rights reserved.",
+            "class.title": "Class Diagram",
+            "class.placeholder": "Class Diagram Image",
+            "class.text1": "The class diagram shows the main components of the game architecture and their relationships.",
+            "class.item1": "Planet class hierarchy with different planet types",
+            "class.item2": "Game controller managing the battle flow",
+            "class.item3": "Database handler for save/load functionality",
+            "class.item4": "UI components and their interactions",
+            "database.title": "Database Diagram",
+            "database.placeholder": "Database ER Diagram",
+            "database.text1": "The database schema stores all game state and player progress.",
+            "database.item1": "Player profiles and statistics",
+            "database.item2": "Saved game states",
+            "database.item3": "Planet configurations",
+            "database.item4": "Battle history records",
+            "nav.class": "Class Diagram",
+            "nav.database": "Database"
         },
         es: {
             "nav.about": "Acerca de",
@@ -119,7 +135,23 @@ document.addEventListener('DOMContentLoaded', function() {
             "footer.press": "Kit de Prensa",
             "footer.community": "Comunidad",
             "footer.follow": "Síguenos",
-            "footer.copyright": "© 2023 Odisea Cósmica. Todos los derechos reservados."
+            "footer.copyright": "© 2023 Odisea Cósmica. Todos los derechos reservados.",
+            "class.title": "Diagrama de Clases",
+            "class.placeholder": "Imagen del Diagrama de Clases",
+            "class.text1": "El diagrama de clases muestra los componentes principales de la arquitectura del juego y sus relaciones.",
+            "class.item1": "Jerarquía de clases de planetas con diferentes tipos",
+            "class.item2": "Controlador del juego que maneja el flujo de batalla",
+            "class.item3": "Manejador de base de datos para funcionalidad de guardar/cargar",
+            "class.item4": "Componentes de UI y sus interacciones",
+            "database.title": "Diagrama de Base de Datos",
+            "database.placeholder": "Diagrama ER de Base de Datos",
+            "database.text1": "El esquema de la base de datos almacena todo el estado del juego y el progreso del jugador.",
+            "database.item1": "Perfiles de jugador y estadísticas",
+            "database.item2": "Estados de juego guardados",
+            "database.item3": "Configuraciones de planetas",
+            "database.item4": "Registros de historial de batallas",
+             "nav.class": "Diagrama de Clases",
+            "nav.database": "Base de Datos"
         }
     };
 
